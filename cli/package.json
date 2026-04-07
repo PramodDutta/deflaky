@@ -1,25 +1,54 @@
 {
-  "name": "deflaky",
-  "version": "1.0.0",
-  "description": "Detect flaky tests by running your test suite multiple times",
+  "name": "deflaky-cli",
+  "version": "1.0.1",
+  "description": "Detect flaky tests by running your test suite multiple times. Works with Playwright, Selenium, Cypress, Jest, Pytest and any JUnit/JSON reporter.",
   "main": "dist/index.js",
   "bin": {
     "deflaky": "./bin/deflaky.js"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "flaky",
+    "flaky-tests",
     "tests",
     "testing",
+    "test-automation",
     "cli",
     "junit",
-    "test-runner"
+    "test-runner",
+    "playwright",
+    "selenium",
+    "cypress",
+    "jest",
+    "pytest",
+    "ci-cd",
+    "test-reliability",
+    "flakescore",
+    "deflaky"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Pramod Dutta <pramod@thetestingacademy.com> (https://thetestingacademy.com)",
+  "license": "MIT",
+  "homepage": "https://deflaky.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PramodDutta/deflaky.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/PramodDutta/deflaky/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
   "dependencies": {
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.5",
