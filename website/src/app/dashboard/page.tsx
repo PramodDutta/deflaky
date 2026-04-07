@@ -252,7 +252,7 @@ function PassRateBar({ rate }: { rate: number }) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="w-20 h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
+      <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${color}`}
           style={{ width: `${rate}%` }}
@@ -304,7 +304,7 @@ function ConfidenceBar({ confidence }: { confidence: number }) {
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-muted">Confidence:</span>
-      <div className="flex-1 h-2.5 bg-[#1a1a1a] rounded-full overflow-hidden max-w-48">
+      <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden max-w-48">
         <div
           className={`h-full rounded-full ${barColor} transition-all duration-700 ease-out`}
           style={{ width: `${confidence}%` }}
@@ -462,7 +462,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Table Header */}
-          <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 text-xs text-muted uppercase tracking-wider border-b border-card-border bg-[#111]">
+          <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 text-xs text-muted uppercase tracking-wider border-b border-card-border bg-gray-50">
             <div className="col-span-5">Test Name</div>
             <div className="col-span-2">Pass Rate</div>
             <div className="col-span-1 text-center">Runs</div>
@@ -481,7 +481,7 @@ export default function DashboardPage() {
                 onClick={() => handleTestClick(t)}
                 className={`grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 px-5 py-4 border-b border-card-border transition items-center
                   ${isClickable ? "cursor-pointer" : "cursor-default"}
-                  ${isSelected ? "bg-accent/10 border-l-2 border-l-accent" : "hover:bg-[#111]"}
+                  ${isSelected ? "bg-orange-50 border-l-4 border-l-accent shadow-sm" : "hover:bg-gray-50"}
                 `}
               >
                 <div className="md:col-span-5 font-mono text-sm truncate flex items-center gap-2">
@@ -570,7 +570,7 @@ export default function DashboardPage() {
             {/* Test selected but not analyzed yet */}
             {selectedTest && !isAnalyzing && !analysisResult && !noConfig && (
               <div className="py-4">
-                <div className="flex items-start gap-3 p-4 rounded-lg bg-[#111] border border-card-border">
+                <div className="flex items-start gap-3 p-4 rounded-lg bg-gray-50 border border-card-border">
                   <span className="w-2 h-2 rounded-full bg-accent mt-1.5 flex-shrink-0" />
                   <div className="min-w-0">
                     <p className="font-mono text-sm font-medium truncate">
@@ -647,7 +647,7 @@ export default function DashboardPage() {
                   <h4 className="text-xs uppercase tracking-wider text-muted mb-2">
                     Root Cause
                   </h4>
-                  <div className="p-4 rounded-lg bg-[#111] border border-card-border">
+                  <div className="p-4 rounded-lg bg-gray-50 border border-card-border">
                     <p className="text-sm leading-relaxed">
                       {analysisResult.rootCause}
                     </p>
@@ -660,7 +660,7 @@ export default function DashboardPage() {
                     Suggested Fix
                   </h4>
                   <div className="relative rounded-lg overflow-hidden border border-card-border">
-                    <div className="flex items-center justify-between px-4 py-2 bg-[#0d0d0d] border-b border-card-border">
+                    <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-card-border">
                       <span className="text-xs text-muted font-mono">
                         fix.ts
                       </span>
@@ -675,7 +675,7 @@ export default function DashboardPage() {
                         Copy
                       </button>
                     </div>
-                    <pre className="p-4 bg-[#111] text-sm font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed">
+                    <pre className="p-4 bg-gray-50 text-sm font-mono overflow-x-auto whitespace-pre-wrap leading-relaxed">
                       <code>{analysisResult.suggestedFix}</code>
                     </pre>
                   </div>
