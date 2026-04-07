@@ -158,9 +158,10 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
-            The open-source CLI that detects flaky tests in seconds. Push results
-            to the dashboard to track trends, get alerts, and fix reliability
-            issues before they tank your pipeline.
+            Detect flaky tests in seconds with AI-powered root cause analysis.
+            BYOK &mdash; bring your own AI key. Push results to the dashboard to
+            track trends, get alerts, and fix reliability issues before they tank
+            your pipeline.
           </p>
 
           {/* CTAs */}
@@ -258,6 +259,124 @@ export default function Home() {
               title="Team Collaboration"
               description="Share flakiness reports with your team. Assign owners to flaky tests. Track who fixed what and when."
             />
+            <Feature
+              icon="&#129302;"
+              title="AI Root Cause Analysis"
+              description="AI analyzes your stack traces and tells you exactly why a test failed — infrastructure, app bug, test code, or flaky."
+            />
+            <Feature
+              icon="&#128218;"
+              title="AI Failure Categorization"
+              description="Automatically classify every failure. No more manual triage. Works with any LLM provider you choose."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ====== AI-POWERED ANALYSIS ====== */}
+      <section className="py-20 md:py-28 border-t border-card-border px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              AI-Powered Analysis
+            </h2>
+            <p className="text-muted max-w-xl mx-auto">
+              DeFlaky uses AI to analyze your test failures, identify root causes,
+              and suggest fixes — automatically.
+            </p>
+          </div>
+
+          <div className="mx-auto max-w-2xl rounded-xl border border-card-border bg-card-bg overflow-hidden glow-orange">
+            {/* Title bar */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-card-border bg-card-border/30">
+              <span className="w-3 h-3 rounded-full bg-red-500" />
+              <span className="w-3 h-3 rounded-full bg-yellow-500" />
+              <span className="w-3 h-3 rounded-full bg-green-500" />
+              <span className="ml-3 text-xs text-muted font-mono">
+                AI Root Cause Analysis
+              </span>
+            </div>
+            {/* Analysis content */}
+            <div className="p-6 font-mono text-sm leading-relaxed space-y-4">
+              <div>
+                <span className="text-muted">Test: </span>
+                <span className="text-foreground">flaky &mdash; random number check</span>
+              </div>
+              <div>
+                <span className="text-muted">Category: </span>
+                <span className="text-yellow-400 font-semibold">FLAKY</span>
+                <span className="text-muted ml-2">(87% confidence)</span>
+              </div>
+              <div className="border-t border-card-border pt-4">
+                <p className="text-accent font-semibold mb-1">Root Cause:</p>
+                <p className="text-muted">
+                  Test relies on Math.random() producing non-deterministic values.
+                  Each run generates a different number, causing intermittent
+                  assertion failures.
+                </p>
+              </div>
+              <div className="border-t border-card-border pt-4">
+                <p className="text-green-400 font-semibold mb-2">Suggested Fix:</p>
+                <div className="bg-card-border/30 rounded-md px-4 py-3">
+                  <p className="text-foreground">
+                    jest.spyOn(Math, &apos;random&apos;)
+                  </p>
+                  <p className="text-foreground ml-4">
+                    .mockReturnValue(0.75);
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ====== BRING YOUR OWN KEY ====== */}
+      <section className="py-20 md:py-28 border-t border-card-border px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Bring Your Own Key
+            </h2>
+            <p className="text-muted max-w-xl mx-auto">
+              Use any LLM provider you prefer. Your API key never leaves your
+              browser. We never store or log it.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {[
+              {
+                name: "Anthropic (Claude)",
+                tagline: "Best for code analysis",
+              },
+              {
+                name: "OpenAI (GPT-4o)",
+                tagline: "Great all-around",
+              },
+              {
+                name: "Groq",
+                tagline: "Ultra-fast, free tier",
+              },
+              {
+                name: "OpenRouter",
+                tagline: "100+ models, one API",
+              },
+              {
+                name: "Ollama",
+                tagline: "Run locally, 100% private",
+              },
+            ].map((provider) => (
+              <div
+                key={provider.name}
+                className="rounded-xl border border-card-border bg-card-bg p-6 text-center hover:border-accent/40 transition"
+              >
+                <h3 className="font-semibold text-foreground mb-2">
+                  {provider.name}
+                </h3>
+                <p className="text-sm text-muted">{provider.tagline}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -352,9 +471,9 @@ export default function Home() {
               period="/mo after launch"
               features={[
                 "Everything in Dashboard +",
-                "Unlimited history",
-                "SSO & audit logs",
-                "Custom retention",
+                "AI Root Cause Analysis",
+                "AI Failure Categorization",
+                "Unlimited AI queries",
                 "Priority support",
               ]}
               cta="Join Waitlist"

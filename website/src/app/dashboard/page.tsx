@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 /* ── Mock Data ── */
 const mockTests = [
   { name: 'login.spec.ts > "should redirect after login"', passRate: 60, runs: 25, trend: "worse", lastSeen: "2 hours ago" },
@@ -101,9 +103,9 @@ export default function DashboardPage() {
             <p className="text-sm text-muted">Project ID: demo-ecommerce &middot; Last run: 30 minutes ago</p>
           </div>
           <div className="flex gap-3">
-            <button className="text-sm border border-card-border px-4 py-2 rounded-lg hover:bg-card-bg transition">
+            <Link href="/dashboard/settings" className="text-sm border border-card-border px-4 py-2 rounded-lg hover:bg-card-bg transition">
               Settings
-            </button>
+            </Link>
             <button className="text-sm bg-accent hover:bg-accent-hover text-black font-semibold px-4 py-2 rounded-lg transition">
               Run Now
             </button>
