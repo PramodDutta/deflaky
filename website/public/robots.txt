@@ -1,0 +1,8 @@
+# DeFlaky - https://deflaky.com
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /dashboard
+
+Sitemap: https://deflaky.com/sitemap.xml

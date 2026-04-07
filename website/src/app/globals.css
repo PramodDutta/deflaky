@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/* Light theme (default) */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --accent: #ea580c;
+  --accent-hover: #f97316;
+  --card-bg: #f8fafc;
+  --card-border: #e2e8f0;
+  --muted: #64748b;
+}
+
+/* Dark theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --accent: #f97316;
+    --accent-hover: #fb923c;
+    --card-bg: #141414;
+    --card-border: #262626;
+    --muted: #737373;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Gradient glow effect */
+.glow-orange {
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.12);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ea580c, #f97316, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Terminal animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+/* Subtle grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
