@@ -24,6 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: "https://deflaky.com/docs/github-actions",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: "https://deflaky.com/blog",
       lastModified: new Date(),
       changeFrequency: "weekly",
