@@ -12,7 +12,7 @@ export const organizationSchema = {
   "@type": "Organization",
   name: "DeFlaky",
   url: "https://deflaky.com",
-  logo: "https://deflaky.com/logo.png",
+  logo: "https://deflaky.com/logo.svg",
   description:
     "Open-source CLI and dashboard for detecting, tracking, and eliminating flaky tests in software test suites.",
   foundingDate: "2025",
@@ -21,7 +21,7 @@ export const organizationSchema = {
     name: "The Testing Academy",
     url: "https://thetestingacademy.com",
   },
-  sameAs: ["https://github.com/user/deflaky"],
+  sameAs: ["https://github.com/PramodDutta/deflaky"],
 };
 
 export const webSiteSchema = {
@@ -59,21 +59,20 @@ export const softwareApplicationSchema = {
     },
     {
       "@type": "Offer",
-      name: "Solo",
+      name: "Dashboard (Free during launch)",
+      price: "0",
+      priceCurrency: "USD",
+      description:
+        "Dashboard with unlimited projects, 90-day history, FlakeScore trends, and email & Slack alerts. Free during launch.",
+    },
+    {
+      "@type": "Offer",
+      name: "Pro",
       price: "19",
       priceCurrency: "USD",
       billingIncrement: "P1M",
       description:
-        "Dashboard for individual SDETs with 1 project, 30-day history, FlakeScore trends, and email alerts.",
-    },
-    {
-      "@type": "Offer",
-      name: "Team",
-      price: "49",
-      priceCurrency: "USD",
-      billingIncrement: "P1M",
-      description:
-        "Team dashboard with 5 projects, unlimited members, Slack integration, 90-day history, and CI/CD gate rules.",
+        "Everything in Dashboard plus AI Root Cause Analysis, AI Failure Categorization, unlimited history, and priority support.",
     },
   ],
   featureList: [
@@ -82,11 +81,12 @@ export const softwareApplicationSchema = {
     "Framework agnostic (Playwright, Selenium, Cypress, Jest, Pytest)",
     "CI/CD pipeline integration",
     "Slack and email alerts",
+    "AI root cause analysis (BYOK)",
     "Team collaboration and test ownership",
   ],
-  softwareVersion: "1.0",
-  downloadUrl: "https://www.npmjs.com/package/deflaky",
-  installUrl: "https://www.npmjs.com/package/deflaky",
+  softwareVersion: "1.0.1",
+  downloadUrl: "https://www.npmjs.com/package/deflaky-cli",
+  installUrl: "https://www.npmjs.com/package/deflaky-cli",
   creator: {
     "@type": "Organization",
     name: "The Testing Academy",

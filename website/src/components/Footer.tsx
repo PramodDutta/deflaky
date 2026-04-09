@@ -35,10 +35,10 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-sm mb-3">Resources</h4>
             <ul className="space-y-2 text-sm text-muted">
-              <li><a href="#" className="hover:text-foreground transition">Blog</a></li>
-              <li><a href="#" className="hover:text-foreground transition">Changelog</a></li>
-              <li><a href="https://github.com/user/deflaky" className="hover:text-foreground transition">GitHub</a></li>
-              <li><a href="#" className="hover:text-foreground transition">npm</a></li>
+              <li><Link href="/blog" className="hover:text-foreground transition">Blog</Link></li>
+              <li><Link href="/changelog" className="hover:text-foreground transition">Changelog</Link></li>
+              <li><a href="https://github.com/PramodDutta/deflaky" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">GitHub</a></li>
+              <li><a href="https://www.npmjs.com/package/deflaky-cli" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">npm</a></li>
             </ul>
           </div>
 
@@ -46,14 +46,14 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-sm mb-3">Legal</h4>
             <ul className="space-y-2 text-sm text-muted">
-              <li><a href="#" className="hover:text-foreground transition">Privacy</a></li>
-              <li><a href="#" className="hover:text-foreground transition">Terms</a></li>
+              <li><Link href="/privacy" className="hover:text-foreground transition">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-foreground transition">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-card-border flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-muted">
-          <p>&copy; {new Date().getFullYear()} DeFlaky. Built by The Testing Academy.</p>
+          <p>&copy; {new Date().getFullYear()} DeFlaky. Built by <a href="https://thetestingacademy.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">The Testing Academy</a>.</p>
           <p>Made with flaky determination.</p>
         </div>
       </div>

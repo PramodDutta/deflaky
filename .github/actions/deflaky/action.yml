@@ -1,0 +1,92 @@
+name: "DeFlaky - Flaky Test Detection"
+description: "Detect flaky tests by running your test suite multiple times. Calculates FlakeScore and optionally pushes results to the DeFlaky dashboard."
+author: "DeFlaky"
+
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  command:
+    description: "Test command to run (e.g., 'npx playwright test')"
+    required: true
+  runs:
+    description: "Number of times to run the test suite"
+    required: false
+    default: "3"
+  token:
+    description: "DeFlaky API token (format: df_<uuid>). Required for --push."
+    required: false
+  push:
+    description: "Push results to the DeFlaky dashboard"
+    required: false
+    default: "true"
+  fail-threshold:
+    description: "Fail if FlakeScore drops below this percentage (0-100). Set to 0 to disable."
+    required: false
+    default: "0"
+  node-version:
+    description: "Node.js version to use for installing deflaky-cli"
+    required: false
+    default: "20"
+
+outputs:
+  flake-score:
+    description: "The FlakeScore from the run (0-100)"
+    value: ${{ steps.run.outputs.flake-score }}
+  flaky-count:
+    description: "Number of flaky tests detected"
+    value: ${{ steps.run.outputs.flaky-count }}
+  total-tests:
+    description: "Total number of tests"
+    value: ${{ steps.run.outputs.total-tests }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install DeFlaky CLI
+      shell: bash
+      run: npm install -g deflaky-cli
+
+    - name: Run DeFlaky
+      id: run
+      shell: bash
+      run: |
+        ARGS="-c \"${{ inputs.command }}\" -r ${{ inputs.runs }}"
+
+        if [ "${{ inputs.push }}" = "true" ] && [ -n "${{ inputs.token }}" ]; then
+          ARGS="$ARGS --push --token ${{ inputs.token }}"
+        fi
+
+        if [ "${{ inputs.fail-threshold }}" != "0" ]; then
+          ARGS="$ARGS --fail-threshold ${{ inputs.fail-threshold }}"
+        fi
+
+        eval deflaky $ARGS | tee /tmp/deflaky-output.txt
+
+        FLAKE_SCORE=$(grep -oP 'FlakeScore:\s*\K[\d.]+' /tmp/deflaky-output.txt || echo "0")
+        FLAKY_COUNT=$(grep -oP 'Flaky tests:\s*\K\d+' /tmp/deflaky-output.txt || echo "0")
+        TOTAL_TESTS=$(grep -oP 'Total tests:\s*\K\d+' /tmp/deflaky-output.txt || echo "0")
+
+        echo "flake-score=$FLAKE_SCORE" >> $GITHUB_OUTPUT
+        echo "flaky-count=$FLAKY_COUNT" >> $GITHUB_OUTPUT
+        echo "total-tests=$TOTAL_TESTS" >> $GITHUB_OUTPUT
+
+    - name: Add summary
+      if: always()
+      shell: bash
+      run: |
+        echo "## DeFlaky Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| FlakeScore | ${{ steps.run.outputs.flake-score }}% |" >> $GITHUB_STEP_SUMMARY
+        echo "| Flaky Tests | ${{ steps.run.outputs.flaky-count }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Total Tests | ${{ steps.run.outputs.total-tests }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "View full results on the [DeFlaky Dashboard](https://deflaky.com/dashboard)." >> $GITHUB_STEP_SUMMARY

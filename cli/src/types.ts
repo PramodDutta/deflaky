@@ -38,3 +38,11 @@ export interface CLIOptions {
   failThreshold?: number;
   verbose: boolean;
 }
+
+export interface SavedRunData {
+  command: string;
+  date: string;
+  runs: number;
+  totalDurationMs: number;
+  result: AnalysisResult;
+}

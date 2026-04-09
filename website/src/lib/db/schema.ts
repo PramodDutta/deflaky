@@ -10,8 +10,9 @@ import {
 } from "drizzle-orm/pg-core";
 
 // Enums
-export const planEnum = pgEnum("plan", ["free", "solo", "team"]);
+export const planEnum = pgEnum("plan", ["free", "pro", "solo", "team"]);
 export const testStatusEnum = pgEnum("test_status", ["pass", "fail", "skip"]);
+export const teamRoleEnum = pgEnum("team_role", ["owner", "admin", "member", "viewer"]);
 
 // Users table
 export const users = pgTable("users", {
@@ -20,8 +21,38 @@ export const users = pgTable("users", {
   name: varchar("name", { length: 255 }).notNull(),
   avatarUrl: text("avatar_url"),
   plan: planEnum("plan").default("free").notNull(),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+  stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
+  stripePriceId: varchar("stripe_price_id", { length: 255 }),
+  stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Teams table
+export const teams = pgTable("teams", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  ownerId: uuid("owner_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Team members junction table
+export const teamMembers = pgTable("team_members", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  teamId: uuid("team_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  role: teamRoleEnum("role").default("member").notNull(),
+  invitedBy: uuid("invited_by").references(() => users.id),
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
 // Projects table
@@ -33,6 +64,7 @@ export const projects = pgTable("projects", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  teamId: uuid("team_id").references(() => teams.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

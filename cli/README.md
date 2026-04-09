@@ -54,6 +54,41 @@ FlakeScore = (stable tests / total tests) x 100
 - **< 100%** = Some tests are flaky (sometimes pass, sometimes fail)
 - A test is "flaky" if it passes in some runs and fails in others
 
+## GitHub Actions
+
+Run DeFlaky automatically on every push and PR. Add this workflow to `.github/workflows/deflaky.yml` in your repository:
+
+```yaml
+name: DeFlaky - Flaky Test Detection
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2am
+
+jobs:
+  deflaky:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm install -g deflaky-cli
+      - name: Run DeFlaky
+        run: deflaky -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+        env:
+          DEFLAKY_TOKEN: ${{ secrets.DEFLAKY_TOKEN }}
+```
+
+Add your DeFlaky token as a GitHub repository secret named `DEFLAKY_TOKEN` (Settings > Secrets and variables > Actions). Get your token at [deflaky.com/dashboard](https://deflaky.com/dashboard).
+
+For the full setup guide with PR comments, framework examples (Playwright, Cypress, Jest, Pytest, Selenium), and troubleshooting, see the [GitHub Actions documentation](https://deflaky.com/docs/github-actions).
+
 ## Links
 
 - **Website**: [deflaky.com](https://deflaky.com)

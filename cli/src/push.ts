@@ -1,7 +1,7 @@
 import { URL } from "node:url";
 import type { AnalysisResult, RunResult } from "./types.js";
 
-const DEFAULT_API_URL = "https://website-eight-murex-11.vercel.app/api/push";
+const DEFAULT_API_URL = "https://deflaky.com/api/push";
 
 interface ApiPayload {
   command: string;

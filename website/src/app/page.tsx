@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { JsonLd } from "@/components/schema/JsonLd";
 import { softwareApplicationSchema } from "@/components/schema/homepage-schema";
+import { ReportDemo } from "@/components/ReportDemo";
 
 /* ── Hero Terminal Block ── */
 function TerminalDemo() {
@@ -16,7 +17,7 @@ function TerminalDemo() {
       {/* Code */}
       <div className="p-5 font-mono text-sm leading-relaxed overflow-x-auto">
         <p className="text-muted">
-          <span className="text-green-400">$</span> npx deflaky --command &quot;npx playwright
+          <span className="text-green-400">$</span> npx deflaky-cli --command &quot;npx playwright
           test&quot; --runs 5
         </p>
         <br />
@@ -90,6 +91,7 @@ function PricingCard({
   period,
   features,
   cta,
+  href,
   highlighted,
 }: {
   tier: string;
@@ -97,6 +99,7 @@ function PricingCard({
   period: string;
   features: string[];
   cta: string;
+  href: string;
   highlighted?: boolean;
 }) {
   return (
@@ -121,7 +124,7 @@ function PricingCard({
         ))}
       </ul>
       <Link
-        href="/dashboard"
+        href={href}
         className={`mt-6 block text-center py-2.5 rounded-lg font-semibold text-sm transition ${
           highlighted
             ? "bg-accent hover:bg-accent-hover text-black"
@@ -173,7 +176,7 @@ export default function Home() {
               Get Started &mdash; It&apos;s Free
             </Link>
             <Link
-              href="/dashboard"
+              href="/demo"
               className="border border-card-border hover:border-accent/50 font-semibold px-8 py-3.5 rounded-lg text-base transition"
             >
               View Dashboard Demo
@@ -183,7 +186,7 @@ export default function Home() {
           {/* Install one-liner */}
           <div className="inline-flex items-center gap-3 border border-card-border rounded-lg px-5 py-3 bg-card-bg font-mono text-sm mb-16">
             <span className="text-muted">$</span>
-            <span>npm install -g deflaky</span>
+            <span>npm install -g deflaky-cli</span>
             <button className="text-muted hover:text-accent transition ml-2" title="Copy">
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -194,6 +197,22 @@ export default function Home() {
 
           {/* Terminal */}
           <TerminalDemo />
+        </div>
+      </section>
+
+      {/* ====== REPORT DEMO ====== */}
+      <section className="py-20 md:py-28 px-6">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              See exactly what&apos;s flaky
+            </h2>
+            <p className="text-muted max-w-xl mx-auto">
+              DeFlaky generates a detailed report after every run — FlakeScore,
+              per-test pass rates, and AI-powered root cause analysis.
+            </p>
+          </div>
+          <ReportDemo />
         </div>
       </section>
 
@@ -393,7 +412,7 @@ export default function Home() {
               {
                 step: "01",
                 title: "Install the CLI",
-                code: "npm install -g deflaky",
+                code: "npm install -g deflaky-cli",
               },
               {
                 step: "02",
@@ -442,6 +461,7 @@ export default function Home() {
               tier="CLI"
               price="$0"
               period="forever"
+              href="/docs"
               features={[
                 "Unlimited local runs",
                 "Terminal reports",
@@ -455,6 +475,7 @@ export default function Home() {
               tier="Dashboard"
               price="$0"
               period="free during launch"
+              href="/dashboard"
               features={[
                 "Everything in CLI +",
                 "Unlimited projects",
@@ -466,17 +487,18 @@ export default function Home() {
               highlighted
             />
             <PricingCard
-              tier="Pro (Coming Soon)"
+              tier="Pro"
               price="$19"
-              period="/mo after launch"
+              period="/month"
+              href="/dashboard"
               features={[
                 "Everything in Dashboard +",
                 "AI Root Cause Analysis",
                 "AI Failure Categorization",
-                "Unlimited AI queries",
+                "Unlimited history",
                 "Priority support",
               ]}
-              cta="Join Waitlist"
+              cta="Start Free Trial"
             />
           </div>
         </div>
@@ -491,7 +513,7 @@ export default function Home() {
             <span className="gradient-text">They&apos;re unmonitored.</span>
           </h2>
           <p className="text-muted mb-8 text-lg">
-            Join hundreds of QA engineers who ship with confidence.
+            Join QA engineers who ship with confidence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -501,7 +523,7 @@ export default function Home() {
               Get Started Free
             </Link>
             <a
-              href="https://github.com/user/deflaky"
+              href="https://github.com/PramodDutta/deflaky"
               className="border border-card-border hover:border-accent/50 font-semibold px-8 py-3.5 rounded-lg text-base transition"
             >
               Star on GitHub

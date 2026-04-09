@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Dark background -->
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+
+  <!-- Subtle green accent line at top -->
+  <rect x="0" y="0" width="1200" height="4" fill="#4ade80"/>
+
+  <!-- Logo: rounded square with "df" -->
+  <rect x="100" y="195" width="160" height="160" rx="24" ry="24" fill="#4ade80"/>
+  <text x="180" y="290" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="90" font-weight="700" fill="#000000" text-anchor="middle" dominant-baseline="central">df</text>
+
+  <!-- "DeFlaky" text -->
+  <text x="310" y="260" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="80" font-weight="700" fill="#ffffff" dominant-baseline="central">DeFlaky</text>
+
+  <!-- Tagline -->
+  <text x="310" y="330" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="32" font-weight="400" fill="#a1a1aa" dominant-baseline="central">Detect &amp; Fix Flaky Tests</text>
+
+  <!-- Bottom green accent line -->
+  <rect x="100" y="430" width="200" height="3" rx="1.5" fill="#4ade80" opacity="0.6"/>
+</svg>

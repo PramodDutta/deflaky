@@ -1,10 +1,45 @@
 import { db } from "@/lib/db";
-import { projects } from "@/lib/db/schema";
+import { projects, teamMembers } from "@/lib/db/schema";
+import { eq, or, and, inArray } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 import crypto from "crypto";
 
 export async function GET() {
   try {
-    const allProjects = await db.select().from(projects);
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+
+    // Get team IDs where user is a member
+    const userTeamMemberships = await db
+      .select({ teamId: teamMembers.teamId })
+      .from(teamMembers)
+      .where(eq(teamMembers.userId, userId));
+
+    const teamIds = userTeamMemberships.map((m) => m.teamId);
+
+    // Get projects: user's own projects OR projects belonging to user's teams
+    let allProjects;
+    if (teamIds.length > 0) {
+      allProjects = await db
+        .select()
+        .from(projects)
+        .where(
+          or(
+            eq(projects.userId, userId),
+            inArray(projects.teamId, teamIds)
+          )
+        );
+    } else {
+      allProjects = await db
+        .select()
+        .from(projects)
+        .where(eq(projects.userId, userId));
+    }
+
     return Response.json({ projects: allProjects });
   } catch (error) {
     console.error("Projects GET error:", error);
@@ -17,6 +52,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     let body: unknown;
     try {
       body = await request.json();
@@ -27,10 +67,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, slug, userId } = body as {
+    const { name, slug, userId, teamId } = body as {
       name?: string;
       slug?: string;
       userId?: string;
+      teamId?: string;
     };
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
@@ -51,11 +92,32 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    if (!userId || typeof userId !== "string") {
-      return Response.json(
-        { error: "userId is required" },
-        { status: 400 }
-      );
+
+    // Use session userId if not provided in body
+    const projectUserId = userId || session.user.id;
+
+    // If teamId is provided, verify user is owner or admin of that team
+    if (teamId) {
+      const membership = await db
+        .select({ role: teamMembers.role })
+        .from(teamMembers)
+        .where(
+          and(
+            eq(teamMembers.teamId, teamId),
+            eq(teamMembers.userId, session.user.id)
+          )
+        )
+        .limit(1);
+
+      if (
+        membership.length === 0 ||
+        !["owner", "admin"].includes(membership[0].role)
+      ) {
+        return Response.json(
+          { error: "You must be an owner or admin of the team to create team projects" },
+          { status: 403 }
+        );
+      }
     }
 
     const apiToken = `df_${crypto.randomUUID()}`;
@@ -66,7 +128,8 @@ export async function POST(request: Request) {
         name: name.trim(),
         slug: slug.trim(),
         apiToken,
-        userId,
+        userId: projectUserId,
+        ...(teamId ? { teamId } : {}),
       })
       .returning();
 

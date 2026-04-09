@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 /* ── Provider / Model Definitions ── */
 const PROVIDERS = [
@@ -121,11 +122,26 @@ function ExternalLinkIcon() {
 
 /* ── Main Page ── */
 export default function SettingsPage() {
+  const { data: session } = useSession();
   const [config, setConfig] = useState<AiConfig>(DEFAULT_CONFIG);
   const [showKey, setShowKey] = useState(false);
   const [validationStatus, setValidationStatus] = useState<"idle" | "loading" | "valid" | "invalid">("idle");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved">("idle");
   const [mounted, setMounted] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [upgradeSuccess, setUpgradeSuccess] = useState(false);
+
+  // Check for upgrade success query param
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("upgrade") === "success") {
+        setUpgradeSuccess(true);
+        // Clean URL
+        window.history.replaceState({}, "", "/dashboard/settings");
+      }
+    }
+  }, []);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -201,8 +217,84 @@ export default function SettingsPage() {
 
         {/* Page heading */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">AI Settings</h1>
+          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
           <p className="text-muted text-sm mt-1">
+            Manage your subscription and AI configuration.
+          </p>
+        </div>
+
+        {/* ── Upgrade Success Banner ── */}
+        {upgradeSuccess && (
+          <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 mb-6 flex items-center gap-3">
+            <CheckIcon />
+            <div>
+              <p className="text-sm font-semibold text-green-400">Upgrade successful!</p>
+              <p className="text-xs text-muted">Your Pro plan is now active. Enjoy AI-powered insights!</p>
+            </div>
+          </div>
+        )}
+
+        {/* ── Billing & Subscription ── */}
+        <div className="rounded-xl border border-card-border bg-card-bg p-6 mb-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Subscription</h2>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-foreground">
+                Current plan: <span className="font-semibold text-accent">Free (Launch)</span>
+              </p>
+              <p className="text-xs text-muted mt-1">
+                You&apos;re on the free launch plan with full dashboard access.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  setBillingLoading(true);
+                  try {
+                    const res = await fetch("/api/stripe/portal", { method: "POST" });
+                    const data = await res.json();
+                    if (data.url) {
+                      window.location.href = data.url;
+                    }
+                  } catch {
+                    // No billing account yet
+                  } finally {
+                    setBillingLoading(false);
+                  }
+                }}
+                className="text-sm border border-card-border px-4 py-2 rounded-lg hover:bg-background transition"
+              >
+                Manage Billing
+              </button>
+              <Link
+                href="/pricing"
+                className="text-sm bg-accent hover:bg-accent-hover text-black font-semibold px-4 py-2 rounded-lg transition"
+              >
+                {billingLoading ? "Loading..." : "Upgrade to Pro"}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Info */}
+        <div className="rounded-xl border border-card-border bg-card-bg p-6 mb-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Account</h2>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted">Name</span>
+              <span className="text-sm text-foreground">{session?.user?.name || "—"}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted">Email</span>
+              <span className="text-sm text-foreground">{session?.user?.email || "—"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Settings heading */}
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-foreground">AI Configuration</h2>
+          <p className="text-muted text-xs mt-1">
             Configure the AI provider used for intelligent test failure analysis.
           </p>
         </div>

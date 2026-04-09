@@ -1,0 +1,117 @@
+# DeFlaky - Flaky Test Detection for GitHub Actions
+# Copy this file to your repository at .github/workflows/deflaky.yml
+#
+# Prerequisites:
+#   1. Add your DeFlaky API token as a repository secret named DEFLAKY_TOKEN
+#      (Settings > Secrets and variables > Actions > New repository secret)
+#   2. Get your token at https://deflaky.com/dashboard
+#
+# Learn more: https://deflaky.com/docs/github-actions
+
+name: DeFlaky - Flaky Test Detection
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2am UTC
+
+jobs:
+  deflaky:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # Required for PR comments
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install DeFlaky CLI
+        run: npm install -g deflaky-cli
+
+      # ─── Option 1: Playwright ───
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run DeFlaky
+        id: deflaky
+        run: |
+          deflaky -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }} | tee deflaky-output.txt
+          echo "flake-score=$(grep -oP 'FlakeScore:\s*\K[\d.]+' deflaky-output.txt || echo '100')" >> $GITHUB_OUTPUT
+          echo "flaky-count=$(grep -oP 'Flaky tests:\s*\K\d+' deflaky-output.txt || echo '0')" >> $GITHUB_OUTPUT
+        env:
+          DEFLAKY_TOKEN: ${{ secrets.DEFLAKY_TOKEN }}
+
+      # ─── Post results as PR comment ───
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const flakeScore = '${{ steps.deflaky.outputs.flake-score }}' || '100';
+            const flakyCount = '${{ steps.deflaky.outputs.flaky-count }}' || '0';
+            const emoji = Number(flakeScore) >= 95 ? '✅' : Number(flakeScore) >= 80 ? '⚠️' : '❌';
+
+            const body = `## ${emoji} DeFlaky Report
+
+            | Metric | Value |
+            |--------|-------|
+            | **FlakeScore** | ${flakeScore}% |
+            | **Flaky Tests** | ${flakyCount} |
+            | **Runs** | 3 |
+
+            ${Number(flakyCount) > 0
+              ? `> **${flakyCount} flaky test(s) detected.** View details on the [DeFlaky Dashboard](https://deflaky.com/dashboard).`
+              : '> No flaky tests detected. Your test suite is stable!'}
+
+            ---
+            *Powered by [DeFlaky](https://deflaky.com) — Detect and eliminate flaky tests*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      # ─── Add to job summary ───
+      - name: Add summary
+        if: always()
+        run: |
+          echo "## DeFlaky Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| FlakeScore | ${{ steps.deflaky.outputs.flake-score }}% |" >> $GITHUB_STEP_SUMMARY
+          echo "| Flaky Tests | ${{ steps.deflaky.outputs.flaky-count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View Dashboard](https://deflaky.com/dashboard)" >> $GITHUB_STEP_SUMMARY
+
+
+# ─────────────────────────────────────────────────
+# Alternative test commands (replace the Run DeFlaky step above):
+#
+# Cypress:
+#   deflaky -c "npx cypress run" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#
+# Jest:
+#   deflaky -c "npx jest --ci" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#
+# Pytest:
+#   deflaky -c "pytest" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#
+# Selenium (Maven):
+#   deflaky -c "mvn test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+# ─────────────────────────────────────────────────
