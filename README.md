@@ -4,14 +4,14 @@
 
 **Detect & Fix Flaky Tests**
 
-[![npm version](https://img.shields.io/npm/v/deflaky?color=blue)](https://www.npmjs.com/package/deflaky)
+[![npm version](https://img.shields.io/npm/v/deflaky-cli?color=blue)](https://www.npmjs.com/package/deflaky-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Website](https://img.shields.io/badge/Website-deflaky.com-purple)](https://deflaky.com)
 [![GitHub](https://img.shields.io/badge/GitHub-PramodDutta%2Fdeflaky-black?logo=github)](https://github.com/PramodDutta/deflaky)
 
 A free, open-source CLI tool and dashboard that runs your test suite multiple times, detects flaky tests, and gives you a clear **FlakeScore** to track test reliability over time.
 
-[Website](https://deflaky.com) | [GitHub](https://github.com/PramodDutta/deflaky) | [Documentation](https://deflaky.com/docs)
+[Website](https://deflaky.com) | [npm](https://www.npmjs.com/package/deflaky-cli) | [GitHub](https://github.com/PramodDutta/deflaky) | [Documentation](https://deflaky.com/docs)
 
 </div>
 
@@ -192,6 +192,6 @@ DeFlaky is released under the [MIT License](LICENSE).
 
 Built by **[The Testing Academy](https://thetestingacademy.com)** (Pramod Dutta)
 
-[Website](https://deflaky.com) | [GitHub](https://github.com/PramodDutta/deflaky) | [The Testing Academy](https://thetestingacademy.com)
+[Website](https://deflaky.com) | [npm](https://www.npmjs.com/package/deflaky-cli) | [GitHub](https://github.com/PramodDutta/deflaky) | [The Testing Academy](https://thetestingacademy.com)
 
 </div>
