@@ -7,6 +7,7 @@ import {
   decimal,
   integer,
   pgEnum,
+  index,
 } from "drizzle-orm/pg-core";
 
 // Enums
@@ -80,7 +81,10 @@ export const testRuns = pgTable("test_runs", {
   totalTests: integer("total_tests").notNull(),
   flakeScore: decimal("flake_score", { precision: 5, scale: 2 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  projectIdIdx: index("test_runs_project_id_idx").on(table.projectId),
+  projectCreatedIdx: index("test_runs_project_created_idx").on(table.projectId, table.createdAt),
+}));
 
 // Test results table
 export const testResults = pgTable("test_results", {
@@ -93,4 +97,7 @@ export const testResults = pgTable("test_results", {
   status: testStatusEnum("status").notNull(),
   durationMs: integer("duration_ms"),
   runIndex: integer("run_index").notNull(),
-});
+}, (table) => ({
+  testRunIdIdx: index("test_results_test_run_id_idx").on(table.testRunId),
+  testNameIdx: index("test_results_test_name_idx").on(table.testName),
+}));

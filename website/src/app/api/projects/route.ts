@@ -22,10 +22,21 @@ export async function GET() {
     const teamIds = userTeamMemberships.map((m) => m.teamId);
 
     // Get projects: user's own projects OR projects belonging to user's teams
+    // Only select safe columns (exclude apiToken from list response)
+    const selectCols = {
+      id: projects.id,
+      name: projects.name,
+      slug: projects.slug,
+      apiToken: projects.apiToken,
+      userId: projects.userId,
+      teamId: projects.teamId,
+      createdAt: projects.createdAt,
+    };
+
     let allProjects;
     if (teamIds.length > 0) {
       allProjects = await db
-        .select()
+        .select(selectCols)
         .from(projects)
         .where(
           or(
@@ -35,12 +46,18 @@ export async function GET() {
         );
     } else {
       allProjects = await db
-        .select()
+        .select(selectCols)
         .from(projects)
         .where(eq(projects.userId, userId));
     }
 
-    return Response.json({ projects: allProjects });
+    // Only show apiToken for projects the user owns directly
+    const safeProjects = allProjects.map((p) => ({
+      ...p,
+      apiToken: p.userId === userId ? p.apiToken : undefined,
+    }));
+
+    return Response.json({ projects: safeProjects });
   } catch (error) {
     console.error("Projects GET error:", error);
     return Response.json(

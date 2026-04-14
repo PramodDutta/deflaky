@@ -7,65 +7,45 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: "https://deflaky.com",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1.0,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/pricing",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/docs",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/docs/github-actions",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/blog",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/demo",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/changelog",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.6,
+      lastModified: new Date("2026-04-14"),
     },
     {
       url: "https://deflaky.com/privacy",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
+      lastModified: new Date("2026-03-01"),
     },
     {
       url: "https://deflaky.com/terms",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
+      lastModified: new Date("2026-03-01"),
     },
   ];
 
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `https://deflaky.com/blog/${post.slug}`,
     lastModified: new Date(post.date),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
   }));
 
   return [...staticPages, ...blogPages];

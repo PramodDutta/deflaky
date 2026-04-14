@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
+import { JsonLd } from "@/components/schema/JsonLd";
+import { blogCollectionPageSchema } from "@/components/schema/blog-schema";
 
 export const metadata: Metadata = {
   title: "Blog — DeFlaky",
@@ -13,6 +15,9 @@ export default function BlogPage() {
 
   return (
     <div className="grid-bg min-h-screen">
+      {/* Structured Data: CollectionPage */}
+      <JsonLd data={blogCollectionPageSchema} />
+
       <div className="mx-auto max-w-4xl px-6 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-3">Blog</h1>

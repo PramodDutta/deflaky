@@ -55,16 +55,10 @@ export async function GET(
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // Get test run IDs from the last 7 days
-    const recentRunIds = await db
-      .select({ id: testRuns.id })
-      .from(testRuns)
-      .where(
-        and(
-          eq(testRuns.projectId, projectId),
-          gte(testRuns.createdAt, sevenDaysAgo)
-        )
-      );
+    // Derive 7-day run IDs from recentRuns instead of a separate query
+    const recentRunIds = recentRuns
+      .filter((r) => r.createdAt >= sevenDaysAgo)
+      .map((r) => ({ id: r.id }));
 
     let flakyTests: Array<{
       testName: string;

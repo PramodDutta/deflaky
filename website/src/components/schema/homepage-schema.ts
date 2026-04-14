@@ -5,6 +5,8 @@
  * - Organization (The Testing Academy / DeFlaky brand)
  * - WebSite with SearchAction (sitelinks search box eligibility)
  * - SoftwareApplication (the DeFlaky product itself)
+ *
+ * Pricing tiers: Free CLI + Pro $19/mo (2-tier model, updated April 2026).
  */
 
 export const organizationSchema = {
@@ -51,28 +53,25 @@ export const softwareApplicationSchema = {
   offers: [
     {
       "@type": "Offer",
-      name: "CLI (Free)",
+      name: "Free",
       price: "0",
       priceCurrency: "USD",
       description:
-        "Free open-source CLI with unlimited local runs, terminal reports, and support for all test frameworks.",
-    },
-    {
-      "@type": "Offer",
-      name: "Dashboard (Free during launch)",
-      price: "0",
-      priceCurrency: "USD",
-      description:
-        "Dashboard with unlimited projects, 90-day history, FlakeScore trends, and email & Slack alerts. Free during launch.",
+        "Free open-source CLI with unlimited local runs, terminal reports, and support for all test frameworks. MIT licensed.",
     },
     {
       "@type": "Offer",
       name: "Pro",
       price: "19",
       priceCurrency: "USD",
-      billingIncrement: "P1M",
       description:
-        "Everything in Dashboard plus AI Root Cause Analysis, AI Failure Categorization, unlimited history, and priority support.",
+        "Pro dashboard with push results, test history and trends, FlakeScore tracking, AI Root Cause Analysis, team collaboration, and priority support. 15-day free trial included.",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: "19",
+        priceCurrency: "USD",
+        billingDuration: "P1M",
+      },
     },
   ],
   featureList: [

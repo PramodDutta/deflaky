@@ -1,7 +1,7 @@
 /**
  * Schema.org structured data for the DeFlaky docs page.
  *
- * Uses TechArticle — the correct type for technical documentation.
+ * Uses TechArticle -- the correct type for technical documentation.
  *
  * NOTE: HowTo schema is intentionally NOT used here.
  * Google removed HowTo rich results in September 2023, making the
@@ -28,7 +28,7 @@ export const docsArticleSchema = {
     url: "https://deflaky.com",
     logo: {
       "@type": "ImageObject",
-      url: "https://deflaky.com/logo.png",
+      url: "https://deflaky.com/logo.svg",
     },
   },
   mainEntityOfPage: {

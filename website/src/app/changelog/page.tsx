@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/schema/JsonLd";
+import {
+  changelogPageSchema,
+  changelogBreadcrumbSchema,
+} from "@/components/schema/changelog-schema";
 
 export const metadata: Metadata = {
   title: "Changelog — DeFlaky",
@@ -61,6 +66,10 @@ const tagStyles: Record<string, { bg: string; text: string; label: string }> = {
 export default function ChangelogPage() {
   return (
     <div className="grid-bg min-h-screen">
+      {/* Structured Data: WebPage + BreadcrumbList */}
+      <JsonLd data={changelogPageSchema} />
+      <JsonLd data={changelogBreadcrumbSchema} />
+
       <div className="mx-auto max-w-3xl px-6 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-3">Changelog</h1>

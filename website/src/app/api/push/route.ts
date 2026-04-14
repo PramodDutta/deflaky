@@ -92,6 +92,12 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+    if (results.length > 50000) {
+      return Response.json(
+        { error: "Too many test results (max 50,000 per push)" },
+        { status: 400 }
+      );
+    }
 
     // Validate each test result
     const validStatuses = ["pass", "fail", "skip"];
