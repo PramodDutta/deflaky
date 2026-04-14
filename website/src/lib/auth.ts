@@ -23,10 +23,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .limit(1);
 
         if (existing.length === 0) {
+          const trialEndsAt = new Date();
+          trialEndsAt.setDate(trialEndsAt.getDate() + 15);
+
           await db.insert(users).values({
             email: user.email,
             name: user.name || (profile?.login as string) || "User",
             avatarUrl: user.image || null,
+            trialEndsAt,
           });
         } else {
           // Update avatar and name on each login
@@ -56,6 +60,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (dbUser.length > 0) {
           session.user.id = dbUser[0].id;
+          session.user.plan = dbUser[0].plan;
+          session.user.trialEndsAt = dbUser[0].trialEndsAt?.toISOString() ?? null;
+          session.user.stripeSubscriptionId = dbUser[0].stripeSubscriptionId ?? null;
+          session.user.stripeCurrentPeriodEnd = dbUser[0].stripeCurrentPeriodEnd?.toISOString() ?? null;
         }
       }
       return session;

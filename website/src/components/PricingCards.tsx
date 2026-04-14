@@ -6,12 +6,12 @@ import { useSession } from "next-auth/react";
 
 const tiers = [
   {
-    name: "CLI",
+    name: "Free",
     price: "$0",
     period: "forever",
     description: "For individual developers exploring test reliability.",
     features: [
-      "Unlimited local runs",
+      "Unlimited local CLI runs",
       "Beautiful terminal reports",
       "JUnit XML & JSON parsing",
       "All frameworks supported",
@@ -20,50 +20,26 @@ const tiers = [
     cta: "Install Free",
     href: "/docs",
     highlighted: false,
-    badge: null,
-    stripe: false,
-  },
-  {
-    name: "Dashboard",
-    price: "$0",
-    period: "free during launch",
-    description:
-      "Everything included. Free for early adopters during launch.",
-    features: [
-      "Everything in CLI +",
-      "Unlimited projects",
-      "90-day trend history",
-      "FlakeScore tracking",
-      "Email & Slack alerts",
-      "Team members",
-      "CI/CD gate rules",
-      "API access",
-    ],
-    cta: "Get Free Access",
-    href: "/dashboard",
-    highlighted: true,
-    badge: "LAUNCH OFFER",
-    stripe: false,
   },
   {
     name: "Pro",
     price: "$19",
     period: "/month",
     description:
-      "AI-powered insights, unlimited history, and priority support.",
+      "Push results to the cloud. Track trends, get AI insights, and collaborate with your team.",
     features: [
-      "Everything in Dashboard +",
+      "Everything in Free +",
+      "Push results to dashboard",
+      "Test history & trend tracking",
+      "FlakeScore tracking",
       "AI Root Cause Analysis",
-      "AI Failure Categorization",
-      "Unlimited history retention",
+      "Team collaboration",
+      "Server-side data retention",
       "Priority support",
-      "Custom retention policies",
     ],
-    cta: "Upgrade to Pro",
-    href: "/dashboard",
-    highlighted: false,
-    badge: null,
-    stripe: true,
+    cta: "Start Free Trial",
+    href: null,
+    highlighted: true,
   },
 ];
 
@@ -93,8 +69,37 @@ export function PricingCards() {
     }
   }
 
+  function getProCta() {
+    if (!session) return { label: "Start Free Trial", action: "checkout" };
+
+    const plan = session.user?.plan;
+    const trialEndsAt = session.user?.trialEndsAt;
+    const subscriptionId = session.user?.stripeSubscriptionId;
+
+    // Active Pro subscriber
+    if (plan === "pro" && subscriptionId) {
+      return { label: "Current Plan", action: "none" };
+    }
+
+    // Active trial
+    if (trialEndsAt && new Date(trialEndsAt) > new Date()) {
+      const daysLeft = Math.ceil(
+        (new Date(trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+      );
+      return {
+        label: `On Trial (${daysLeft} day${daysLeft !== 1 ? "s" : ""} left)`,
+        action: "dashboard",
+      };
+    }
+
+    // Trial expired or no trial — needs to upgrade
+    return { label: "Upgrade to Pro", action: "checkout" };
+  }
+
+  const proCta = getProCta();
+
   return (
-    <div className="mx-auto max-w-5xl grid md:grid-cols-3 gap-6">
+    <div className="mx-auto max-w-3xl grid md:grid-cols-2 gap-6">
       {tiers.map((t) => (
         <div
           key={t.name}
@@ -104,9 +109,9 @@ export function PricingCards() {
               : "border-card-border bg-card-bg"
           }`}
         >
-          {t.badge && (
+          {t.highlighted && (
             <span className="text-xs font-semibold text-accent mb-3">
-              {t.badge}
+              15-DAY FREE TRIAL
             </span>
           )}
           <h2 className="text-xl font-bold">{t.name}</h2>
@@ -126,26 +131,35 @@ export function PricingCards() {
               </li>
             ))}
           </ul>
-          {t.stripe ? (
-            <button
-              onClick={handleProCheckout}
-              disabled={loading}
-              className={`mt-8 block text-center py-3 rounded-lg font-semibold transition cursor-pointer ${
-                loading
-                  ? "bg-card-border text-muted cursor-not-allowed"
-                  : "bg-card-border hover:bg-[#333] text-foreground"
-              }`}
-            >
-              {loading ? "Redirecting..." : t.cta}
-            </button>
+          {t.highlighted ? (
+            proCta.action === "none" ? (
+              <span className="mt-8 block text-center py-3 rounded-lg font-semibold bg-card-border text-muted">
+                {proCta.label}
+              </span>
+            ) : proCta.action === "dashboard" ? (
+              <Link
+                href="/dashboard"
+                className="mt-8 block text-center py-3 rounded-lg font-semibold bg-accent hover:bg-accent-hover text-black transition"
+              >
+                {proCta.label}
+              </Link>
+            ) : (
+              <button
+                onClick={handleProCheckout}
+                disabled={loading}
+                className={`mt-8 block text-center py-3 rounded-lg font-semibold transition cursor-pointer ${
+                  loading
+                    ? "bg-card-border text-muted cursor-not-allowed"
+                    : "bg-accent hover:bg-accent-hover text-black"
+                }`}
+              >
+                {loading ? "Redirecting..." : proCta.label}
+              </button>
+            )
           ) : (
             <Link
-              href={t.href}
-              className={`mt-8 block text-center py-3 rounded-lg font-semibold transition ${
-                t.highlighted
-                  ? "bg-accent hover:bg-accent-hover text-black"
-                  : "bg-card-border hover:bg-[#333] text-foreground"
-              }`}
+              href={t.href!}
+              className="mt-8 block text-center py-3 rounded-lg font-semibold bg-card-border hover:bg-[#333] text-foreground transition"
             >
               {t.cta}
             </Link>

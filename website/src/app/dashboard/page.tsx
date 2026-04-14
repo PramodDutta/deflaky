@@ -716,6 +716,40 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Trial / Upgrade Banner */}
+        {session?.user && (() => {
+          const plan = session.user.plan;
+          const trialEndsAt = session.user.trialEndsAt;
+          const subscriptionId = session.user.stripeSubscriptionId;
+
+          // Active trial
+          if (trialEndsAt && new Date(trialEndsAt) > new Date() && !(plan === "pro" && subscriptionId)) {
+            const daysLeft = Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+            return (
+              <div className="bg-accent/10 border-b border-accent/30 px-6 py-3 flex items-center justify-between">
+                <p className="text-sm text-accent">
+                  You&apos;re on a 15-day free trial. <strong>{daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining.</strong>
+                </p>
+                <a href="/pricing" className="text-xs font-semibold bg-accent hover:bg-accent-hover text-black px-4 py-1.5 rounded-lg transition">Upgrade to Pro</a>
+              </div>
+            );
+          }
+
+          // Trial expired, no active subscription
+          if (trialEndsAt && new Date(trialEndsAt) <= new Date() && !(plan === "pro" && subscriptionId)) {
+            return (
+              <div className="bg-red-500/10 border-b border-red-500/30 px-6 py-4 flex items-center justify-between">
+                <p className="text-sm text-red-400">
+                  Your trial has ended. Upgrade to Pro to access your dashboard data.
+                </p>
+                <a href="/pricing" className="text-xs font-semibold bg-accent hover:bg-accent-hover text-black px-4 py-1.5 rounded-lg transition">Upgrade Now</a>
+              </div>
+            );
+          }
+
+          return null;
+        })()}
+
         <div className="flex-1 max-w-6xl mx-auto px-6 py-8 w-full">
           {/* Mobile sidebar toggle */}
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden mb-4 p-2 rounded-lg border border-card-border hover:bg-card-border/30 transition cursor-pointer">

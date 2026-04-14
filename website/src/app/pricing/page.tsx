@@ -5,7 +5,7 @@ import { PricingCards } from "@/components/PricingCards";
 
 export const metadata: Metadata = {
   title: "Pricing — DeFlaky",
-  description: "Free CLI forever. Dashboard plans start at $19/mo with a 14-day free trial. Compare CLI, Solo, and Team plans for flaky test detection.",
+  description: "Free CLI forever. Pro plan at $19/mo with a 15-day free trial. Push results to dashboard, AI analysis, team collaboration, and more.",
   alternates: { canonical: "/pricing" },
 };
 
@@ -27,8 +27,8 @@ const faqs = [
     a: "Coming soon! Annual billing will offer 2 months free (pay for 10, get 12).",
   },
   {
-    q: "Is there a Pro/Enterprise plan?",
-    a: "Coming soon — unlimited projects, SSO, audit logs, custom retention, and dedicated support. Contact us for early access.",
+    q: "What happens when my 15-day trial ends?",
+    a: "Your CLI continues to work forever. Dashboard features (push results, trends, AI analysis) require an active Pro subscription after the trial ends. Your data is retained for 30 days after trial expiry.",
   },
 ];
 
@@ -44,8 +44,8 @@ export default function PricingPage() {
           Simple pricing. <span className="gradient-text">No surprises.</span>
         </h1>
         <p className="text-muted text-lg max-w-xl mx-auto">
-          Free CLI forever. Dashboard plans start at $19/mo with a 14-day free
-          trial. Cancel anytime.
+          Free CLI forever. Pro plan at $19/mo with a 15-day free trial. Cancel
+          anytime.
         </p>
       </section>
 

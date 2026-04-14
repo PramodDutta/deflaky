@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { teamMembers, users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { auth } from "@/lib/auth";
+import { requirePro } from "@/lib/require-pro";
 
 async function getCallerRole(teamId: string, userId: string) {
   const membership = await db
@@ -20,10 +21,8 @@ export async function POST(
   { params }: { params: Promise<{ teamId: string }> }
 ) {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const proResult = await requirePro();
+    if (!proResult.authorized) return proResult.response;
 
     const { teamId } = await params;
 
@@ -32,7 +31,7 @@ export async function POST(
     }
 
     // Check caller is owner or admin
-    const callerRole = await getCallerRole(teamId, session.user.id);
+    const callerRole = await getCallerRole(teamId, proResult.user.id);
     if (!callerRole || !["owner", "admin"].includes(callerRole)) {
       return Response.json(
         { error: "Only owners and admins can invite members" },
@@ -98,7 +97,7 @@ export async function POST(
         teamId,
         userId: targetUserId,
         role: memberRole as "admin" | "member" | "viewer",
-        invitedBy: session.user.id,
+        invitedBy: proResult.user.id,
       })
       .returning();
 

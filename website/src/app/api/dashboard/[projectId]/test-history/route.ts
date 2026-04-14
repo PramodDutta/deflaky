@@ -1,12 +1,16 @@
 import { db } from "@/lib/db";
 import { projects, testRuns, testResults } from "@/lib/db/schema";
 import { eq, desc, and, inArray } from "drizzle-orm";
+import { requirePro } from "@/lib/require-pro";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ projectId: string }> }
 ) {
   try {
+    const result = await requirePro();
+    if (!result.authorized) return result.response;
+
     const { projectId } = await params;
 
     if (!projectId || typeof projectId !== "string") {

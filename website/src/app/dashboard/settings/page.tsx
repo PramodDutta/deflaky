@@ -239,39 +239,100 @@ export default function SettingsPage() {
           <h2 className="text-lg font-semibold text-foreground mb-4">Subscription</h2>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-foreground">
-                Current plan: <span className="font-semibold text-accent">Free (Launch)</span>
-              </p>
-              <p className="text-xs text-muted mt-1">
-                You&apos;re on the free launch plan with full dashboard access.
-              </p>
+              {(() => {
+                const plan = session?.user?.plan;
+                const trialEndsAt = session?.user?.trialEndsAt;
+                const subscriptionId = session?.user?.stripeSubscriptionId;
+                const periodEnd = session?.user?.stripeCurrentPeriodEnd;
+
+                // Active Pro subscriber
+                if (plan === "pro" && subscriptionId) {
+                  return (
+                    <>
+                      <p className="text-sm text-foreground">
+                        Current plan: <span className="font-semibold text-accent">Pro</span>
+                      </p>
+                      <p className="text-xs text-muted mt-1">
+                        {periodEnd
+                          ? `Renews on ${new Date(periodEnd).toLocaleDateString()}`
+                          : "Active subscription"}
+                      </p>
+                    </>
+                  );
+                }
+
+                // Active trial
+                if (trialEndsAt && new Date(trialEndsAt) > new Date()) {
+                  const daysLeft = Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                  return (
+                    <>
+                      <p className="text-sm text-foreground">
+                        Current plan: <span className="font-semibold text-accent">Free Trial</span>
+                      </p>
+                      <p className="text-xs text-muted mt-1">
+                        {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining. Upgrade to keep Pro access.
+                      </p>
+                    </>
+                  );
+                }
+
+                // Trial expired
+                if (trialEndsAt && new Date(trialEndsAt) <= new Date()) {
+                  return (
+                    <>
+                      <p className="text-sm text-foreground">
+                        Current plan: <span className="font-semibold text-red-400">Free (Trial Expired)</span>
+                      </p>
+                      <p className="text-xs text-muted mt-1">
+                        Upgrade to Pro to access dashboard features.
+                      </p>
+                    </>
+                  );
+                }
+
+                // Default free
+                return (
+                  <>
+                    <p className="text-sm text-foreground">
+                      Current plan: <span className="font-semibold text-muted">Free</span>
+                    </p>
+                    <p className="text-xs text-muted mt-1">
+                      CLI only. Upgrade to Pro for dashboard access.
+                    </p>
+                  </>
+                );
+              })()}
             </div>
             <div className="flex gap-3">
-              <button
-                onClick={async () => {
-                  setBillingLoading(true);
-                  try {
-                    const res = await fetch("/api/stripe/portal", { method: "POST" });
-                    const data = await res.json();
-                    if (data.url) {
-                      window.location.href = data.url;
+              {session?.user?.stripeSubscriptionId && (
+                <button
+                  onClick={async () => {
+                    setBillingLoading(true);
+                    try {
+                      const res = await fetch("/api/stripe/portal", { method: "POST" });
+                      const data = await res.json();
+                      if (data.url) {
+                        window.location.href = data.url;
+                      }
+                    } catch {
+                      // No billing account yet
+                    } finally {
+                      setBillingLoading(false);
                     }
-                  } catch {
-                    // No billing account yet
-                  } finally {
-                    setBillingLoading(false);
-                  }
-                }}
-                className="text-sm border border-card-border px-4 py-2 rounded-lg hover:bg-background transition"
-              >
-                Manage Billing
-              </button>
-              <Link
-                href="/pricing"
-                className="text-sm bg-accent hover:bg-accent-hover text-black font-semibold px-4 py-2 rounded-lg transition"
-              >
-                {billingLoading ? "Loading..." : "Upgrade to Pro"}
-              </Link>
+                  }}
+                  className="text-sm border border-card-border px-4 py-2 rounded-lg hover:bg-background transition cursor-pointer"
+                >
+                  {billingLoading ? "Loading..." : "Manage Billing"}
+                </button>
+              )}
+              {!(session?.user?.plan === "pro" && session?.user?.stripeSubscriptionId) && (
+                <Link
+                  href="/pricing"
+                  className="text-sm bg-accent hover:bg-accent-hover text-black font-semibold px-4 py-2 rounded-lg transition"
+                >
+                  Upgrade to Pro
+                </Link>
+              )}
             </div>
           </div>
         </div>

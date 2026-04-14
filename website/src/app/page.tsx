@@ -446,59 +446,46 @@ export default function Home() {
 
       {/* ====== PRICING ====== */}
       <section id="pricing" className="py-20 border-t border-card-border px-6">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-3xl">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Simple, transparent pricing
             </h2>
             <p className="text-muted">
-              100% free during launch. CLI is open source forever.
+              Free CLI forever. Pro plan at $19/mo with a 15-day free trial.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
             <PricingCard
-              tier="CLI"
+              tier="Free"
               price="$0"
               period="forever"
               href="/docs"
               features={[
-                "Unlimited local runs",
-                "Terminal reports",
-                "JUnit XML & JSON support",
+                "Unlimited local CLI runs",
+                "Beautiful terminal reports",
+                "JUnit XML & JSON parsing",
                 "All frameworks supported",
                 "Open source (MIT)",
               ]}
               cta="Install Free"
             />
             <PricingCard
-              tier="Dashboard"
-              price="$0"
-              period="free during launch"
-              href="/dashboard"
-              features={[
-                "Everything in CLI +",
-                "Unlimited projects",
-                "90-day history",
-                "FlakeScore trends",
-                "Email & Slack alerts",
-              ]}
-              cta="Get Free Access"
-              highlighted
-            />
-            <PricingCard
               tier="Pro"
               price="$19"
               period="/month"
-              href="/dashboard"
+              href="/pricing"
               features={[
-                "Everything in Dashboard +",
+                "Everything in Free +",
+                "Push results to dashboard",
+                "Test history & trends",
                 "AI Root Cause Analysis",
-                "AI Failure Categorization",
-                "Unlimited history",
+                "Team collaboration",
                 "Priority support",
               ]}
               cta="Start Free Trial"
+              highlighted
             />
           </div>
         </div>

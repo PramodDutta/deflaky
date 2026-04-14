@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
-import { projects, testRuns, testResults } from "@/lib/db/schema";
+import { projects, testRuns, testResults, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { hasProAccess } from "@/lib/plan";
 
 export async function POST(request: Request) {
   try {
@@ -26,6 +27,20 @@ export async function POST(request: Request) {
     }
 
     const project = matchedProjects[0];
+
+    // Check project owner has Pro access
+    const [projectOwner] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, project.userId))
+      .limit(1);
+
+    if (!projectOwner || !hasProAccess(projectOwner)) {
+      return Response.json(
+        { error: "Pro plan required. The project owner must upgrade to push results.", code: "PLAN_REQUIRED" },
+        { status: 403 }
+      );
+    }
 
     // --- Parse & validate body ---
     let body: unknown;

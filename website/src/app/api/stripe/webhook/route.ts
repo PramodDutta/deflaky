@@ -101,8 +101,9 @@ export async function POST(req: NextRequest) {
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         const sub = subscription as unknown as Record<string, unknown>;
-        const plan =
-          subscription.status === "active" ? "pro" : ("free" as const);
+        const plan = ["active", "trialing"].includes(subscription.status)
+          ? "pro"
+          : ("free" as const);
         await db
           .update(users)
           .set({

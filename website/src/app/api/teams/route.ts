@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { teams, teamMembers } from "@/lib/db/schema";
+import { teams, teamMembers, users } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
+import { hasProAccess } from "@/lib/plan";
 
 export async function GET() {
   try {
@@ -47,6 +48,20 @@ export async function POST(request: Request) {
     }
 
     const userId = session.user.id;
+
+    // Pro plan required for team creation
+    const [dbUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!dbUser || !hasProAccess(dbUser)) {
+      return Response.json(
+        { error: "Pro plan required", code: "PLAN_REQUIRED" },
+        { status: 403 }
+      );
+    }
 
     let body: unknown;
     try {
