@@ -16,9 +16,12 @@ interface PlanUser {
 export function getPlanStatus(user: PlanUser): PlanStatus {
   const now = new Date();
 
-  // Active paid Pro subscription
+  // Paid plans: pro, solo, team all get access
+  const paidPlans = ["pro", "solo", "team"];
+
+  // Active paid subscription
   if (
-    user.plan === "pro" &&
+    paidPlans.includes(user.plan) &&
     user.stripeSubscriptionId &&
     user.stripeCurrentPeriodEnd &&
     user.stripeCurrentPeriodEnd > now
@@ -32,8 +35,8 @@ export function getPlanStatus(user: PlanUser): PlanStatus {
     };
   }
 
-  // Pro plan set (e.g. via webhook) but no period check needed
-  if (user.plan === "pro" && user.stripeSubscriptionId) {
+  // Paid plan set (e.g. via webhook) but no period check needed
+  if (paidPlans.includes(user.plan) && user.stripeSubscriptionId) {
     return {
       plan: "pro",
       isTrialing: false,
