@@ -42,6 +42,11 @@ export async function GET(
       return Response.json({ error: "Project not found" }, { status: 404 });
     }
 
+    // Verify project ownership
+    if (matchedProjects[0].userId !== result.user.id) {
+      return Response.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     // Get last 30 test runs for this project, newest first
     const runs = await db
       .select({

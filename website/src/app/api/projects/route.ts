@@ -93,8 +93,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Use session userId if not provided in body
-    const projectUserId = userId || session.user.id;
+    // Always use authenticated user's ID
+    const projectUserId = session.user.id;
 
     // If teamId is provided, verify user is owner or admin of that team
     if (teamId) {

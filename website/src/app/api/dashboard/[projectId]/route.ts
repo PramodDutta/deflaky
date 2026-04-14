@@ -33,6 +33,11 @@ export async function GET(
 
     const project = matchedProjects[0];
 
+    // Verify project ownership
+    if (project.userId !== result.user.id) {
+      return Response.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     // --- Recent test runs (last 20) ---
     const recentRuns = await db
       .select()

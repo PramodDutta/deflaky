@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
+import { JsonLd } from "@/components/schema/JsonLd";
+import {
+  generateBlogPostingSchema,
+  generateBlogBreadcrumbSchema,
+} from "@/components/schema/blog-schema";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -46,8 +51,12 @@ function markdownToHtml(md: string): string {
     // Bold and italic
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-accent hover:underline">$1</a>')
+    // Links (sanitize href to prevent javascript: XSS)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_match, text, href) => {
+      const safeHref = /^(https?:\/\/|\/|#)/.test(href) ? href : '#';
+      const safeText = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return `<a href="${safeHref}" class="text-accent hover:underline">${safeText}</a>`;
+    })
     // Horizontal rule
     .replace(/^---$/gm, '<hr class="border-card-border my-8" />')
     // Unordered lists
@@ -82,9 +91,15 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const htmlContent = markdownToHtml(post.content);
+  const blogPostingSchema = generateBlogPostingSchema(post);
+  const breadcrumbSchema = generateBlogBreadcrumbSchema(post);
 
   return (
     <div className="grid-bg min-h-screen">
+      {/* Structured Data: BlogPosting + BreadcrumbList */}
+      <JsonLd data={blogPostingSchema} />
+      <JsonLd data={breadcrumbSchema} />
+
       <div className="mx-auto max-w-3xl px-6 py-16">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-muted mb-8">

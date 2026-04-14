@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAIProvider } from "@/lib/ai/factory";
 import type { AIConfig } from "@/lib/ai/types";
+import { auth } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const config = (await request.json()) as AIConfig;
 
     if (!config?.provider || !config?.apiKey) {
