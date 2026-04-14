@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { trackBeginCheckout, trackViewPricing } from "@/lib/analytics";
 
 const tiers = [
   {
@@ -47,12 +48,18 @@ export function PricingCards() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
+  // Track pricing page view on mount
+  useEffect(() => {
+    trackViewPricing();
+  }, []);
+
   async function handleProCheckout() {
     if (!session) {
       window.location.href = "/login?callbackUrl=/pricing";
       return;
     }
 
+    trackBeginCheckout();
     setLoading(true);
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });

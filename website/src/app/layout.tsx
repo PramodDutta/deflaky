@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AppShell } from "@/components/AppShell";
 import { Providers } from "@/components/Providers";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { JsonLd } from "@/components/schema/JsonLd";
 import {
   organizationSchema,
@@ -91,6 +92,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>
+          <AnalyticsTracker />
           <AppShell>
             {children}
           </AppShell>
