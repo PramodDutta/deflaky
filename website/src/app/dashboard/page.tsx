@@ -144,29 +144,79 @@ function Spinner() {
   );
 }
 
-function MiniChart({ runs }: { runs: RecentRun[] }) {
-  const data = runs.slice(0, 7).reverse();
+function TrendChart({ runs }: { runs: RecentRun[] }) {
+  const data = runs.slice(0, 10).reverse();
   if (data.length === 0) return null;
-  const max = Math.max(...data.map((r) => r.flakeScore), 1);
+
+  const W = 400;
+  const H = 160;
+  const padX = 30;
+  const padY = 20;
+  const min = Math.min(...data.map((r) => r.flakeScore));
+  const max = Math.max(...data.map((r) => r.flakeScore));
+  const range = max - min || 1;
+
+  const points = data.map((r, i) => {
+    const x = padX + (i / Math.max(data.length - 1, 1)) * (W - padX * 2);
+    const y = padY + (1 - (r.flakeScore - min) / range) * (H - padY * 2);
+    return { x, y, run: r };
+  });
+
+  const linePoints = points.map((p) => `${p.x},${p.y}`).join(" ");
+  const areaPoints = `${points[0].x},${H - padY} ${linePoints} ${points[points.length - 1].x},${H - padY}`;
+
   return (
-    <div className="rounded-xl border border-card-border bg-card-bg p-5">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-sm font-semibold">FlakeScore Trend</h3>
-        <span className="text-xs text-muted">Last {data.length} runs</span>
+    <div className="flex gap-4">
+      {/* Chart */}
+      <div className="flex-1 rounded-xl border border-card-border bg-card-bg p-5">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-sm font-semibold">FlakeScore Trend</h3>
+          <span className="text-xs text-muted">Last {data.length} runs</span>
+        </div>
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-40" preserveAspectRatio="none">
+          <polygon points={areaPoints} fill="url(#trendGrad)" opacity="0.3" />
+          <polyline points={linePoints} fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {points.map((p, i) => (
+            <g key={i}>
+              <circle cx={p.x} cy={p.y} r="4" fill="#f97316" stroke="#1a1a2e" strokeWidth="2" />
+              <text x={p.x} y={p.y - 10} textAnchor="middle" fill="#999" fontSize="9" fontFamily="monospace">{p.run.flakeScore}%</text>
+            </g>
+          ))}
+          {points.map((p, i) => (
+            <text key={`d${i}`} x={p.x} y={H - 4} textAnchor="middle" fill="#666" fontSize="8" fontFamily="sans-serif">
+              {new Date(p.run.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            </text>
+          ))}
+          <defs>
+            <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f97316" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
-      <div className="flex items-end gap-2 h-32">
-        {data.map((r, i) => (
-          <div key={r.id || i} className="flex-1 flex flex-col items-center gap-1">
-            <span className="text-xs text-muted">{r.flakeScore}</span>
-            <div
-              className="w-full rounded-t-md bg-accent/70 hover:bg-accent transition"
-              style={{ height: `${(r.flakeScore / max) * 100}%` }}
-            />
-            <span className="text-[10px] text-muted">
-              {new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-            </span>
-          </div>
-        ))}
+
+      {/* Recent Runs sidebar */}
+      <div className="hidden lg:block w-64 rounded-xl border border-card-border bg-card-bg p-5">
+        <h3 className="text-sm font-semibold mb-3">Recent Runs</h3>
+        <div className="space-y-3">
+          {runs.slice(0, 5).map((r) => (
+            <div key={r.id} className="flex items-center justify-between text-xs">
+              <div>
+                <p className="font-mono font-semibold">{r.flakeScore}%</p>
+                <p className="text-muted">{r.totalTests} tests</p>
+              </div>
+              <div className="text-right">
+                <p className="text-muted">
+                  {new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </p>
+                <p className="text-muted text-[10px]">
+                  {new Date(r.createdAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -797,7 +847,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <StatCard
                   label="FlakeScore"
-                  value={String(stats?.flakeScore ?? 0)}
+                  value={`${stats?.flakeScore ?? 0}%`}
                   sub={`From ${recentRuns.length} run${recentRuns.length !== 1 ? "s" : ""}`}
                   color={(stats?.flakeScore ?? 0) >= 90 ? "text-green-400" : (stats?.flakeScore ?? 0) >= 70 ? "text-yellow-400" : "text-red-400"}
                   icon={<svg className="w-4 h-4 text-muted group-hover:text-accent transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" /></svg>}
@@ -805,7 +855,7 @@ export default function DashboardPage() {
                 <StatCard
                   label="Total Tests"
                   value={String(stats?.totalTests ?? 0)}
-                  sub="Latest run"
+                  sub={`Across ${recentRuns.length} run${recentRuns.length !== 1 ? "s" : ""}`}
                   color="text-foreground"
                   icon={<svg className="w-4 h-4 text-muted group-hover:text-accent transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>}
                 />
@@ -819,15 +869,15 @@ export default function DashboardPage() {
                 <StatCard
                   label="Stable Tests"
                   value={String(stats?.stableCount ?? 0)}
-                  sub="Consistent results"
+                  sub={stats?.totalTests ? `${Math.min(100, (stats.stableCount / stats.totalTests) * 100).toFixed(1)}% of suite` : "Consistent results"}
                   color="text-green-400"
                   icon={<svg className="w-4 h-4 text-muted group-hover:text-green-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                 />
               </div>
 
-              {/* Chart */}
+              {/* Chart + Recent Runs */}
               {recentRuns.length > 1 && (
-                <div className="mb-8"><MiniChart runs={recentRuns} /></div>
+                <div className="mb-8"><TrendChart runs={recentRuns} /></div>
               )}
 
               {/* Flaky Tests Table */}
