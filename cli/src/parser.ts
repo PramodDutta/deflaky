@@ -89,6 +89,29 @@ interface JSONTestResult {
   results?: Array<{ status?: string; duration?: number }>;
 }
 
+interface PlaywrightSpec {
+  title?: string;
+  file?: string;
+  ok?: boolean;
+  status?: string;
+  duration?: number;
+  tests?: Array<{
+    projectName?: string;
+    title?: string;
+    status?: string;
+    ok?: boolean;
+    results?: Array<{ status?: string; duration?: number }>;
+  }>;
+}
+
+interface PlaywrightSuite {
+  title?: string;
+  file?: string;
+  tests?: JSONTestResult[];
+  specs?: PlaywrightSpec[];
+  suites?: PlaywrightSuite[];
+}
+
 interface JSONReport {
   testResults?: Array<{
     testFilePath?: string;
@@ -97,12 +120,7 @@ interface JSONReport {
   }>;
   results?: JSONTestResult[];
   tests?: JSONTestResult[];
-  suites?: Array<{
-    title?: string;
-    file?: string;
-    tests?: JSONTestResult[];
-    suites?: Array<{ title?: string; file?: string; tests?: JSONTestResult[] }>;
-  }>;
+  suites?: PlaywrightSuite[];
 }
 
 export function parseJSONReport(jsonContent: string): TestCase[] {
@@ -170,19 +188,11 @@ export function parseJSONReport(jsonContent: string): TestCase[] {
 }
 
 function extractPlaywrightSuites(
-  suites: Array<{
-    title?: string;
-    file?: string;
-    tests?: JSONTestResult[];
-    suites?: Array<{
-      title?: string;
-      file?: string;
-      tests?: JSONTestResult[];
-    }>;
-  }>,
+  suites: PlaywrightSuite[],
   results: TestCase[]
 ): void {
   for (const suite of suites) {
+    // Handle direct tests on suite (some Playwright versions)
     if (suite.tests) {
       for (const tc of suite.tests) {
         const lastResult = tc.results?.[tc.results.length - 1];
@@ -196,20 +206,39 @@ function extractPlaywrightSuites(
         });
       }
     }
+    // Handle Playwright specs format: suites[] -> specs[] -> tests[] -> results[]
+    if (suite.specs) {
+      for (const spec of suite.specs) {
+        if (spec.tests && Array.isArray(spec.tests)) {
+          for (const tc of spec.tests) {
+            const lastResult = tc.results?.[tc.results.length - 1];
+            const projectName = tc.projectName ? `[${tc.projectName}] ` : "";
+            results.push({
+              name: projectName + (spec.title || tc.title || "unknown"),
+              filePath: spec.file || suite.file || "",
+              status: tc.status === "expected"
+                ? "pass"
+                : tc.status === "skipped"
+                  ? "skip"
+                  : normalizeStatus(lastResult?.status || "failed"),
+              durationMs: lastResult?.duration || 0,
+            });
+          }
+        } else {
+          // spec without nested tests (flat format)
+          results.push({
+            name: spec.title || "unknown",
+            filePath: spec.file || suite.file || "",
+            status: spec.ok
+              ? "pass"
+              : normalizeStatus(spec.status || "failed"),
+            durationMs: spec.duration || 0,
+          });
+        }
+      }
+    }
     if (suite.suites) {
-      extractPlaywrightSuites(
-        suite.suites as Array<{
-          title?: string;
-          file?: string;
-          tests?: JSONTestResult[];
-          suites?: Array<{
-            title?: string;
-            file?: string;
-            tests?: JSONTestResult[];
-          }>;
-        }>,
-        results
-      );
+      extractPlaywrightSuites(suite.suites, results);
     }
   }
 }

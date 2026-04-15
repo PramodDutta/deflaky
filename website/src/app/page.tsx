@@ -422,7 +422,7 @@ export default function Home() {
               {
                 step: "03",
                 title: "Push to dashboard",
-                code: 'deflaky --command "npx playwright test" --runs 5 --push --token YOUR_TOKEN',
+                code: 'deflaky run -c "npx playwright test" -r 5 --push -t YOUR_TOKEN',
               },
             ].map((s) => (
               <div

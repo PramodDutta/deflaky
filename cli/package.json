@@ -1,6 +1,6 @@
 {
   "name": "deflaky-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Detect flaky tests by running your test suite multiple times. Works with Playwright, Selenium, Cypress, Jest, Pytest and any JUnit/JSON reporter.",
   "main": "dist/index.js",
   "bin": {

@@ -231,7 +231,7 @@ function CreateProjectModal({ userId, onCreated, onClose }: { userId: string; on
               </div>
               <div className="p-3 rounded-lg bg-card-border/30 border border-card-border">
                 <p className="text-xs text-muted mb-1">Usage:</p>
-                <code className="text-xs font-mono text-accent">deflaky -c &quot;npx playwright test&quot; -r 5 --push --token {createdToken}</code>
+                <code className="text-xs font-mono text-accent">deflaky run -c &quot;npx playwright test&quot; -r 5 --push -t {createdToken}</code>
               </div>
             </div>
           ) : (
@@ -485,7 +485,7 @@ export default function DashboardPage() {
             <div className="space-y-3 text-sm">
               <div className="flex gap-3"><span className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold flex-shrink-0">1</span><span className="text-muted">Install: <code className="text-accent">npm i -g deflaky-cli</code></span></div>
               <div className="flex gap-3"><span className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold flex-shrink-0">2</span><span className="text-muted">Create a project and get your API token</span></div>
-              <div className="flex gap-3"><span className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold flex-shrink-0">3</span><span className="text-muted">Run: <code className="text-accent">deflaky -c &quot;npx playwright test&quot; -r 5 --push --token YOUR_TOKEN</code></span></div>
+              <div className="flex gap-3"><span className="w-6 h-6 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-bold flex-shrink-0">3</span><span className="text-muted">Run: <code className="text-accent">deflaky run -c &quot;npx playwright test&quot; -r 5 --push -t YOUR_TOKEN</code></span></div>
             </div>
           </div>
           {showCreateModal && session?.user?.id && (
@@ -788,7 +788,7 @@ export default function DashboardPage() {
               <h2 className="text-lg font-semibold mb-2">No test runs yet</h2>
               <p className="text-sm text-muted mb-6 max-w-md mx-auto">Push your first test results using the DeFlaky CLI.</p>
               <div className="inline-block p-4 rounded-lg bg-card-bg border border-card-border text-left">
-                <code className="text-sm font-mono text-accent">deflaky -c &quot;npx playwright test&quot; -r 5 --push --token YOUR_TOKEN</code>
+                <code className="text-sm font-mono text-accent">deflaky run -c &quot;npx playwright test&quot; -r 5 --push -t YOUR_TOKEN</code>
               </div>
             </div>
           ) : (
