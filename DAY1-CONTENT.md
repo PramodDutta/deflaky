@@ -19,7 +19,7 @@ So I built DeFlaky -- an open-source CLI that runs your test command N times, de
 How it works:
 
     npm i -g deflaky-cli
-    deflaky -c "npx playwright test" -r 5
+    deflaky run -c "npx playwright test" -r 5
 
 It runs your tests 5 times, diffs the results, and gives you a report. That's it. No config files, no lock-in.
 
@@ -83,7 +83,7 @@ npm i -g deflaky-cli
 Run it against any test command:
 
 ```bash
-deflaky -c "npx playwright test" -r 5
+deflaky run -c "npx playwright test" -r 5
 ```
 
 That runs your Playwright tests 5 times, collects the results, and outputs a report showing which tests are flaky, along with a **FlakeScore** for each one.
@@ -99,7 +99,7 @@ It gives you a single number to prioritize which flaky tests to fix first.
 This is the part I'm most excited about. DeFlaky can optionally analyze your flaky test failures using LLMs to suggest probable root causes.
 
 ```bash
-deflaky -c "pytest tests/" -r 5 --analyze
+deflaky run -c "pytest tests/" -r 5 --analyze
 ```
 
 It looks at the failure stack traces, test code, timing data, and failure patterns, then suggests whether the flakiness is likely caused by:
@@ -140,7 +140,7 @@ The CLI is free and MIT licensed. Always will be.
 
 ```bash
 npm i -g deflaky-cli
-deflaky -c "your-test-command" -r 5
+deflaky run -c "your-test-command" -r 5
 ```
 
 If you want historical tracking, team dashboards, and CI integration, there's a Pro tier at $19/mo with a 15-day free trial at [deflaky.com](https://deflaky.com).
@@ -169,7 +169,7 @@ DeFlaky runs your tests multiple times, identifies which ones are flaky, assigns
 
 One command to get started:
 npm i -g deflaky-cli
-deflaky -c "npx playwright test" -r 5
+deflaky run -c "npx playwright test" -r 5
 
 The CLI is free and open source (MIT). Forever.
 
@@ -224,7 +224,7 @@ Framework-agnostic. Works with Playwright, Cypress, Selenium, Jest, Pytest.
 Try it in 30 seconds:
 
 npm i -g deflaky-cli
-deflaky -c "npx playwright test" -r 5
+deflaky run -c "npx playwright test" -r 5
 
 That's it. No config files. No signup. No SDK integration.
 
@@ -262,7 +262,7 @@ DeFlaky takes a different approach. You give it your test command, tell it how m
 
 ```
 npm i -g deflaky-cli
-deflaky -c "npx playwright test" -r 5
+deflaky run -c "npx playwright test" -r 5
 ```
 
 It runs your tests 5 times, tracks which ones pass/fail inconsistently, and assigns a FlakeScore (0-100) to each test. Higher score = more flaky = fix this first.
@@ -293,7 +293,7 @@ Here's the idea. Most flaky test tools tell you WHICH tests are flaky. That's us
 DeFlaky's `--analyze` flag feeds the failure stack traces, test code, timing data, and pass/fail patterns into an LLM and gets back a categorized diagnosis:
 
 ```
-deflaky -c "pytest tests/" -r 5 --analyze
+deflaky run -c "pytest tests/" -r 5 --analyze
 ```
 
 Output example:

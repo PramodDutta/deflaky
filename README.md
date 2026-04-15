@@ -51,21 +51,21 @@ No installation required. Use `npx` to run DeFlaky directly:
 
 ```bash
 # Run your Playwright tests 5 times and detect flaky tests
-npx deflaky -c "npx playwright test" -r 5
+npx deflaky run -c "npx playwright test" -r 5
 ```
 
 ### Push Results to Dashboard
 
 ```bash
 # Run 10 iterations and push results to your DeFlaky dashboard
-npx deflaky -c "npx playwright test" -r 10 --push --token YOUR_TOKEN
+npx deflaky run -c "npx playwright test" -r 10 --push --token YOUR_TOKEN
 ```
 
 ### Gate Your CI Pipeline
 
 ```bash
 # Fail the build if FlakeScore drops below 90
-npx deflaky -c "npx jest" -r 3 --fail-threshold 90
+npx deflaky run -c "npx jest" -r 3 --fail-threshold 90
 ```
 
 ---
@@ -86,16 +86,16 @@ npx deflaky -c "npx jest" -r 3 --fail-threshold 90
 
 ```bash
 # Basic usage with Playwright
-npx deflaky -c "npx playwright test" -r 5
+npx deflaky run -c "npx playwright test" -r 5
 
 # Pytest with verbose output
-npx deflaky -c "pytest tests/" -r 3 --verbose
+npx deflaky run -c "pytest tests/" -r 3 --verbose
 
 # Cypress with CI threshold gate
-npx deflaky -c "npx cypress run" -r 5 --fail-threshold 95
+npx deflaky run -c "npx cypress run" -r 5 --fail-threshold 95
 
 # Jest with JSON format and dashboard push
-npx deflaky -c "npx jest --json" -r 10 --format json --push --token YOUR_TOKEN
+npx deflaky run -c "npx jest --json" -r 10 --format json --push --token YOUR_TOKEN
 ```
 
 ---

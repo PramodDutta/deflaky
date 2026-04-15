@@ -48,7 +48,7 @@ jobs:
       - name: Run DeFlaky
         id: deflaky
         run: |
-          deflaky -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }} | tee deflaky-output.txt
+          deflaky run -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }} | tee deflaky-output.txt
           echo "flake-score=$(grep -oP 'FlakeScore:\s*\K[\d.]+' deflaky-output.txt || echo '100')" >> $GITHUB_OUTPUT
           echo "flaky-count=$(grep -oP 'Flaky tests:\s*\K\d+' deflaky-output.txt || echo '0')" >> $GITHUB_OUTPUT
         env:
@@ -104,14 +104,14 @@ jobs:
 # Alternative test commands (replace the Run DeFlaky step above):
 #
 # Cypress:
-#   deflaky -c "npx cypress run" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#   deflaky run -c "npx cypress run" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 #
 # Jest:
-#   deflaky -c "npx jest --ci" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#   deflaky run -c "npx jest --ci" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 #
 # Pytest:
-#   deflaky -c "pytest" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#   deflaky run -c "pytest" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 #
 # Selenium (Maven):
-#   deflaky -c "mvn test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+#   deflaky run -c "mvn test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 # ─────────────────────────────────────────────────

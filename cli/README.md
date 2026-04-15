@@ -22,16 +22,16 @@ npx deflaky-cli --help
 
 ```bash
 # Run your test suite 5 times and detect flaky tests
-deflaky -c "npx playwright test" -r 5
+deflaky run -c "npx playwright test" -r 5
 
 # Run 10 times with verbose output
-deflaky -c "npx jest --ci" -r 10 --verbose
+deflaky run -c "npx jest --ci" -r 10 --verbose
 
 # Push results to DeFlaky dashboard
-deflaky -c "npx playwright test" -r 5 --push --token YOUR_TOKEN
+deflaky run -c "npx playwright test" -r 5 --push --token YOUR_TOKEN
 
 # Fail CI if FlakeScore drops below 90%
-deflaky -c "npx pytest" -r 3 --fail-threshold 90
+deflaky run -c "npx pytest" -r 3 --fail-threshold 90
 ```
 
 ## CLI Reference
@@ -80,7 +80,7 @@ jobs:
       - run: npm ci
       - run: npm install -g deflaky-cli
       - name: Run DeFlaky
-        run: deflaky -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+        run: deflaky run -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
         env:
           DEFLAKY_TOKEN: ${{ secrets.DEFLAKY_TOKEN }}
 ```

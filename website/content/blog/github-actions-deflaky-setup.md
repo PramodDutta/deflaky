@@ -99,7 +99,7 @@ jobs:
         run: npm install -g deflaky-cli
 
       - name: Run DeFlaky
-        run: deflaky -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+        run: deflaky run -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
         env:
           DEFLAKY_TOKEN: ${{ secrets.DEFLAKY_TOKEN }}
 ```
@@ -112,7 +112,7 @@ This workflow triggers on three events:
 
 ## Framework-Specific Examples
 
-The only thing that changes between frameworks is the test command passed to `deflaky -c`. Here are ready-to-use examples for the most popular frameworks.
+The only thing that changes between frameworks is the test command passed to `deflaky run -c`. Here are ready-to-use examples for the most popular frameworks.
 
 ### Playwright
 
@@ -121,35 +121,35 @@ The only thing that changes between frameworks is the test command passed to `de
   run: npx playwright install --with-deps
 
 - name: Run DeFlaky
-  run: deflaky -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 For single-browser testing to save CI minutes:
 
 ```yaml
 - name: Run DeFlaky (Chromium only)
-  run: deflaky -c "npx playwright test --project=chromium" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "npx playwright test --project=chromium" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 ### Cypress
 
 ```yaml
 - name: Run DeFlaky
-  run: deflaky -c "npx cypress run" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "npx cypress run" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 For a specific spec file:
 
 ```yaml
 - name: Run DeFlaky
-  run: deflaky -c "npx cypress run --spec cypress/e2e/checkout.cy.ts" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "npx cypress run --spec cypress/e2e/checkout.cy.ts" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 ### Jest
 
 ```yaml
 - name: Run DeFlaky
-  run: deflaky -c "npx jest --ci" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "npx jest --ci" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 The `--ci` flag in Jest disables interactive mode and provides better output for CI environments.
@@ -169,14 +169,14 @@ For Python projects, make sure Python and your dependencies are installed first:
   run: npm install -g deflaky-cli
 
 - name: Run DeFlaky
-  run: deflaky -c "pytest" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "pytest" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 For Pytest with JUnit XML output for richer reporting:
 
 ```yaml
 - name: Run DeFlaky
-  run: deflaky -c "pytest --junitxml=report.xml" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+  run: deflaky run -c "pytest --junitxml=report.xml" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 ## Configuration Options
@@ -198,7 +198,7 @@ Use `--fail-threshold` to enforce a minimum FlakeScore. If the score drops below
 
 ```yaml
 - name: Run DeFlaky (strict mode)
-  run: deflaky -c "npx playwright test" -r 5 --push --token ${{ secrets.DEFLAKY_TOKEN }} --fail-threshold 90
+  run: deflaky run -c "npx playwright test" -r 5 --push --token ${{ secrets.DEFLAKY_TOKEN }} --fail-threshold 90
 ```
 
 This is useful for preventing PRs from merging when they introduce flaky tests.
@@ -258,7 +258,7 @@ Make sure you install the CLI before running it:
 Or use npx:
 
 ```yaml
-- run: npx deflaky-cli -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
+- run: npx deflaky-cli run -c "npx playwright test" -r 3 --push --token ${{ secrets.DEFLAKY_TOKEN }}
 ```
 
 ### Token Not Working

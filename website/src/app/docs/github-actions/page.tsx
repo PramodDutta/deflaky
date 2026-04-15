@@ -291,7 +291,7 @@ export default function GitHubActionsDocsPage() {
               </p>
               <p>
                 {"        "}
-                <span className="text-blue-400">run:</span> deflaky -c
+                <span className="text-blue-400">run:</span> deflaky run -c
                 &quot;npx playwright test&quot; -r 3 --push --token {"${{ secrets.DEFLAKY_TOKEN }}"}
               </p>
               <p>
@@ -524,7 +524,7 @@ export default function GitHubActionsDocsPage() {
               </p>
             </Prose>
             <CodeBlock title="Terminal">
-              <Cmd text='deflaky -c "npx playwright test" -r 5 --push --token $DEFLAKY_TOKEN --fail-threshold 90' />
+              <Cmd text='deflaky run -c "npx playwright test" -r 5 --push --token $DEFLAKY_TOKEN --fail-threshold 90' />
             </CodeBlock>
             <Prose>
               <p>
@@ -604,7 +604,7 @@ export default function GitHubActionsDocsPage() {
               </p>
               <p>
                 {"    "}
-                <span className="text-blue-400">run:</span> deflaky -c &quot;npx
+                <span className="text-blue-400">run:</span> deflaky run -c &quot;npx
                 playwright test&quot; -r 3 --push --token{" "}
                 {"${{ secrets.DEFLAKY_TOKEN }}"}
               </p>
@@ -648,7 +648,7 @@ export default function GitHubActionsDocsPage() {
               </p>
               <p>
                 {"    "}
-                <span className="text-blue-400">run:</span> deflaky -c &quot;npx
+                <span className="text-blue-400">run:</span> deflaky run -c &quot;npx
                 cypress run&quot; -r 3 --push --token{" "}
                 {"${{ secrets.DEFLAKY_TOKEN }}"}
               </p>
@@ -691,7 +691,7 @@ export default function GitHubActionsDocsPage() {
               </p>
               <p>
                 {"    "}
-                <span className="text-blue-400">run:</span> deflaky -c &quot;npx
+                <span className="text-blue-400">run:</span> deflaky run -c &quot;npx
                 jest --ci&quot; -r 3 --push --token{" "}
                 {"${{ secrets.DEFLAKY_TOKEN }}"}
               </p>
@@ -748,7 +748,7 @@ export default function GitHubActionsDocsPage() {
               </p>
               <p>
                 {"    "}
-                <span className="text-blue-400">run:</span> deflaky -c
+                <span className="text-blue-400">run:</span> deflaky run -c
                 &quot;pytest&quot; -r 3 --push --token{" "}
                 {"${{ secrets.DEFLAKY_TOKEN }}"}
               </p>
@@ -806,7 +806,7 @@ export default function GitHubActionsDocsPage() {
               </p>
               <p>
                 {"    "}
-                <span className="text-blue-400">run:</span> deflaky -c &quot;mvn
+                <span className="text-blue-400">run:</span> deflaky run -c &quot;mvn
                 test&quot; -r 3 --push --token{" "}
                 {"${{ secrets.DEFLAKY_TOKEN }}"}
               </p>
@@ -839,7 +839,7 @@ export default function GitHubActionsDocsPage() {
                 <span className="text-blue-400">run:</span> |
               </p>
               <p>
-                {"      "}deflaky -c &quot;npx playwright test&quot; -r 3 --push
+                {"      "}deflaky run -c &quot;npx playwright test&quot; -r 3 --push
                 --token {"${{ secrets.DEFLAKY_TOKEN }}"} | tee output.txt
               </p>
               <p>

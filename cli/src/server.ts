@@ -98,7 +98,7 @@ export async function startServer(port: number, token?: string): Promise<void> {
   if (!data) {
     console.error(
       chalk.red(
-        "  Error: No previous run data found. Run `deflaky -c \"<your test command>\" -r <runs>` first."
+        "  Error: No previous run data found. Run `deflaky run -c \"<your test command>\" -r <runs>` first."
       )
     );
     console.error(
