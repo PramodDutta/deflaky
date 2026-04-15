@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { executeRuns } from "./runner.js";
 import { analyzeResults } from "./analyzer.js";
@@ -8,6 +8,9 @@ import { printReport } from "./reporter.js";
 import { pushResults } from "./push.js";
 import { startServer } from "./server.js";
 import type { CLIOptions, SavedRunData } from "./types.js";
+
+const pkg = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf-8"));
+const VERSION: string = pkg.version;
 
 const DATA_DIR = ".deflaky";
 const DATA_FILE = "last-run.json";
@@ -24,7 +27,7 @@ const program = new Command();
 program
   .name("deflaky")
   .description("Detect flaky tests by running your test suite multiple times")
-  .version("1.0.0");
+  .version(VERSION);
 
 // Main command (default action)
 program
@@ -86,7 +89,7 @@ program
     console.log("");
     console.log(
       chalk.bold.cyan("  DeFlaky") +
-        chalk.gray(" - Flaky Test Detector v1.0.0")
+        chalk.gray(` - Flaky Test Detector v${VERSION}`)
     );
     console.log(
       chalk.gray(`  Running "${options.command}" x${options.runs} times`)

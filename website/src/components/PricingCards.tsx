@@ -88,14 +88,14 @@ export function PricingCards() {
       return { label: "Current Plan", action: "none" };
     }
 
-    // Active trial
+    // Active trial — still allow upgrade
     if (trialEndsAt && new Date(trialEndsAt) > new Date()) {
       const daysLeft = Math.ceil(
         (new Date(trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
       );
       return {
-        label: `On Trial (${daysLeft} day${daysLeft !== 1 ? "s" : ""} left)`,
-        action: "dashboard",
+        label: `Upgrade to Pro (${daysLeft} day${daysLeft !== 1 ? "s" : ""} trial left)`,
+        action: "checkout",
       };
     }
 
