@@ -20,6 +20,7 @@ export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
+  passwordHash: text("password_hash"),
   avatarUrl: text("avatar_url"),
   plan: planEnum("plan").default("free").notNull(),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),

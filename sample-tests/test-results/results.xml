@@ -1,6 +1,6 @@
-<testsuites id="" name="" tests="8" failures="2" skipped="0" errors="0" time="0.620792">
-<testsuite name="failing.spec.ts" timestamp="2026-04-07T09:46:02.658Z" hostname="" tests="1" failures="1" skipped="0" time="0.003" errors="0">
-<testcase name="always fails — broken assertion" classname="failing.spec.ts" time="0.003">
+<testsuites id="" name="" tests="8" failures="3" skipped="0" errors="0" time="0.6334690000000001">
+<testsuite name="failing.spec.ts" timestamp="2026-04-07T13:36:58.125Z" hostname="" tests="1" failures="1" skipped="0" time="0.004" errors="0">
+<testcase name="always fails — broken assertion" classname="failing.spec.ts" time="0.004">
 <system-out>
 <![CDATA[
 [[ATTACHMENT|failing-always-fails-—-broken-assertion/error-context.md]]
@@ -27,7 +27,7 @@
 </failure>
 </testcase>
 </testsuite>
-<testsuite name="flaky.spec.ts" timestamp="2026-04-07T09:46:02.658Z" hostname="" tests="3" failures="1" skipped="0" time="0.008" errors="0">
+<testsuite name="flaky.spec.ts" timestamp="2026-04-07T13:36:58.125Z" hostname="" tests="3" failures="2" skipped="0" time="0.009" errors="0">
 <testcase name="flaky — random number check" classname="flaky.spec.ts" time="0.003">
 <system-out>
 <![CDATA[
@@ -40,7 +40,7 @@
     Error: expect(received).toBeGreaterThan(expected)
 
     Expected: > 0.5
-    Received:   0.04942389200866515
+    Received:   0.40447312866403395
 
       4 | test("flaky — random number check", () => {
       5 |   const value = Math.random();
@@ -57,17 +57,41 @@
 </testcase>
 <testcase name="flaky — timing-based check" classname="flaky.spec.ts" time="0.004">
 </testcase>
-<testcase name="flaky — date seconds check" classname="flaky.spec.ts" time="0.001">
+<testcase name="flaky — date seconds check" classname="flaky.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|flaky-flaky-—-date-seconds-check/error-context.md]]
+]]>
+</system-out>
+<failure message="expect(received).toBeLessThan(expected)" type="expect.toBeLessThan">
+<![CDATA[  flaky.spec.ts:23:5 › flaky — date seconds check ──────────────────────────────────────────────────
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 36
+    Received:   58
+
+      24 |   const seconds = new Date().getSeconds();
+      25 |   // Fails when seconds > 36 (roughly 40% of the time)
+    > 26 |   expect(seconds).toBeLessThan(36);
+         |                   ^
+      27 | });
+      28 |
+        at /Users/promode/Documents/SocialMedia/deflaky/sample-tests/tests/flaky.spec.ts:26:19
+
+    Error Context: ../test-results/flaky-flaky-—-date-seconds-check/error-context.md
+]]>
+</failure>
 </testcase>
 </testsuite>
-<testsuite name="stable.spec.ts" timestamp="2026-04-07T09:46:02.658Z" hostname="" tests="4" failures="0" skipped="0" time="0.004" errors="0">
+<testsuite name="stable.spec.ts" timestamp="2026-04-07T13:36:58.125Z" hostname="" tests="4" failures="0" skipped="0" time="0.004" errors="0">
 <testcase name="should always pass — addition" classname="stable.spec.ts" time="0.002">
 </testcase>
 <testcase name="should always pass — string concat" classname="stable.spec.ts" time="0.001">
 </testcase>
-<testcase name="should always pass — array length" classname="stable.spec.ts" time="0.001">
+<testcase name="should always pass — array length" classname="stable.spec.ts" time="0">
 </testcase>
-<testcase name="should always pass — truthy check" classname="stable.spec.ts" time="0">
+<testcase name="should always pass — truthy check" classname="stable.spec.ts" time="0.001">
 </testcase>
 </testsuite>
 </testsuites>

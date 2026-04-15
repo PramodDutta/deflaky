@@ -6,16 +6,16 @@
 
 # Test info
 
-- Name: flaky.spec.ts >> flaky — random number check
-- Location: tests/flaky.spec.ts:4:5
+- Name: flaky.spec.ts >> flaky — date seconds check
+- Location: tests/flaky.spec.ts:23:5
 
 # Error details
 
 ```
-Error: expect(received).toBeGreaterThan(expected)
+Error: expect(received).toBeLessThan(expected)
 
-Expected: > 0.5
-Received:   0.40447312866403395
+Expected: < 36
+Received:   58
 ```
 
 # Test source
@@ -26,8 +26,7 @@ Received:   0.40447312866403395
   3  | // This test is DELIBERATELY FLAKY — it passes ~50% of the time
   4  | test("flaky — random number check", () => {
   5  |   const value = Math.random();
-> 6  |   expect(value).toBeGreaterThan(0.5);
-     |                 ^ Error: expect(received).toBeGreaterThan(expected)
+  6  |   expect(value).toBeGreaterThan(0.5);
   7  | });
   8  | 
   9  | // This test is DELIBERATELY FLAKY — it passes ~70% of the time
@@ -47,7 +46,8 @@ Received:   0.40447312866403395
   23 | test("flaky — date seconds check", () => {
   24 |   const seconds = new Date().getSeconds();
   25 |   // Fails when seconds > 36 (roughly 40% of the time)
-  26 |   expect(seconds).toBeLessThan(36);
+> 26 |   expect(seconds).toBeLessThan(36);
+     |                   ^ Error: expect(received).toBeLessThan(expected)
   27 | });
   28 | 
 ```
