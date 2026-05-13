@@ -2,24 +2,65 @@
 
 import { useEffect, useState } from "react";
 
-const BANNER_KEY = "deflaky_banner_aitester_v1";
-const COURSE_URL =
-  "https://class.thetestingacademy.com/ai-powered-testing-mastery";
+const BANNER_KEY = "deflaky_banner_courses_v1";
+
+type Course = {
+  id: string;
+  emoji: string;
+  name: string;
+  pill: string;
+  batch: string;
+  oldPrice: string;
+  newPrice: string;
+  discount: string;
+  code: string;
+  url: string;
+};
+
+const COURSES: Course[] = [
+  {
+    id: "aitester",
+    emoji: "🚀",
+    name: "AI Tester Blueprint",
+    pill: "New Batch Launching",
+    batch: "17 May 2026, 11:00 AM to 12:45 PM IST",
+    oldPrice: "₹35,000",
+    newPrice: "₹9,999",
+    discount: "33% OFF",
+    code: "AITESTER",
+    url: "https://class.thetestingacademy.com/ai-powered-testing-mastery",
+  },
+  {
+    id: "playwright",
+    emoji: "🎭",
+    name: "Playwright Automation Mastery",
+    pill: "90-Day Cohort",
+    batch: "Starts 4 May 2026 • Mon/Wed/Fri • 7:00–8:15 AM IST",
+    oldPrice: "",
+    newPrice: "Up to 10% OFF",
+    discount: "",
+    code: "PROMODE",
+    url: "https://class.thetestingacademy.com/playwright-automation-mastery-course",
+  },
+];
 
 export function TopBanner() {
-  const [dismissed, setDismissed] = useState(true);
+  const [course, setCourse] = useState<Course | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(BANNER_KEY);
-    setDismissed(stored === "dismissed");
+    if (stored === "dismissed") return;
+    // Random pick per page load
+    const pick = COURSES[Math.floor(Math.random() * COURSES.length)];
+    setCourse(pick);
   }, []);
 
   function close() {
     localStorage.setItem(BANNER_KEY, "dismissed");
-    setDismissed(true);
+    setCourse(null);
   }
 
-  if (dismissed) return null;
+  if (!course) return null;
 
   return (
     <div className="relative w-full bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-600 text-white">
@@ -32,39 +73,43 @@ export function TopBanner() {
 
         {/* Course name */}
         <span className="font-semibold whitespace-nowrap">
-          🚀 AI Tester Blueprint
+          {course.emoji} {course.name}
         </span>
 
         {/* Pill */}
         <span className="hidden md:inline-flex bg-yellow-400 text-purple-900 px-2 py-0.5 rounded-md text-xs font-bold whitespace-nowrap">
-          New Batch Launching
+          {course.pill}
         </span>
 
-        {/* Date */}
+        {/* Batch */}
         <span className="hidden lg:inline whitespace-nowrap opacity-90">
-          New Batch • 17 May 2026, 11:00 AM to 12:45 PM IST
+          {course.batch}
         </span>
 
         {/* Price */}
         <span className="hidden sm:inline-flex items-center gap-1.5 whitespace-nowrap">
-          <span className="line-through opacity-60 text-xs">₹35,000</span>
-          <span className="font-bold">₹9,999</span>
-          <span className="bg-green-500/90 text-white px-1.5 py-0.5 rounded text-[10px] font-bold">
-            33% OFF
-          </span>
+          {course.oldPrice && (
+            <span className="line-through opacity-60 text-xs">{course.oldPrice}</span>
+          )}
+          <span className="font-bold">{course.newPrice}</span>
+          {course.discount && (
+            <span className="bg-green-500/90 text-white px-1.5 py-0.5 rounded text-[10px] font-bold">
+              {course.discount}
+            </span>
+          )}
         </span>
 
         {/* Code */}
         <span className="hidden md:inline-flex items-center gap-1 whitespace-nowrap">
           ⚡ Code:
           <span className="bg-yellow-400 text-purple-900 px-1.5 py-0.5 rounded font-mono font-bold text-xs">
-            AITESTER
+            {course.code}
           </span>
         </span>
 
         {/* CTA */}
         <a
-          href={COURSE_URL}
+          href={course.url}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 bg-white text-purple-700 hover:bg-purple-50 transition px-3 py-1 rounded-md font-bold text-xs whitespace-nowrap"
